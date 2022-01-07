@@ -3,9 +3,18 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
+import { Configuration, GreetingControllerApi } from "../api";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
+  const config = new Configuration({
+    basePath: "http://localhost:8080", // 1
+    
+  });
+  const greetingApi = new GreetingControllerApi(config); // 2
+
+  const [res, setRes] = useState<AxiosResponse | null>(null);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -15,6 +24,22 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        <h2>JSON</h2>
+        <p>{JSON.stringify(res)}</p>
+
+        <h2>Data</h2>
+        <p>{JSON.stringify(res?.data)}</p>
+
+        <button
+          onClick={async () => {
+            const res = await greetingApi.greeting("Lukas");
+            setRes(res);
+          }}
+          title="Test"
+          value={"Test"}
+        >
+          Test
+        </button>
       </main>
     </div>
   );
