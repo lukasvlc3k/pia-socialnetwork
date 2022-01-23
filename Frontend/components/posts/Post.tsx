@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { FloatingLabel, Form, ProgressBar } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
+import React from 'react';
 import styles from '../../styles/post.module.scss';
-import { PostDto } from '../../api';
+import { PostDto, PostDtoPostTypeEnum } from '../../api';
 import moment from 'moment';
 import sanitizeHtml from 'sanitize-html';
 import { allowedHtmlTagsInPosts } from '../../consts/general';
@@ -21,7 +19,14 @@ export default function Post(props: PostProps) {
     }
     return (
         <div className={styles.wrapperPost}>
-            <div className={styles.header}>
+            <div
+                className={styles.header}
+                style={
+                    props.post.postType === PostDtoPostTypeEnum.Announcment
+                        ? { backgroundColor: '#C03221' }
+                        : {}
+                }
+            >
                 <div className={styles.user}>{props.post.user?.name}</div>
                 <div
                     className={styles.date}
