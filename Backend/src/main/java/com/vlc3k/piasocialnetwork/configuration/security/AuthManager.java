@@ -1,4 +1,4 @@
-package com.vlc3k.piasocialnetwork.configuration;
+package com.vlc3k.piasocialnetwork.configuration.security;
 
 import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.services.UserService;
@@ -20,8 +20,8 @@ public class AuthManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String username = authentication.getPrincipal() + "";
-        String password = authentication.getCredentials() + "";
+        String username = (String)authentication.getPrincipal();
+        String password = (String)authentication.getCredentials();
 
         User user = userService.getByEmail(username);
         if (user == null) {

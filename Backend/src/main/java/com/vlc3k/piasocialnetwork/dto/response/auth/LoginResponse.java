@@ -1,15 +1,14 @@
-package com.vlc3k.piasocialnetwork.dto.auth;
+package com.vlc3k.piasocialnetwork.dto.response.auth;
 
 import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class LoginResponse {
     private String token;
     private String email;

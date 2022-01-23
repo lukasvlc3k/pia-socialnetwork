@@ -1,4 +1,4 @@
-package com.vlc3k.piasocialnetwork.configuration;
+package com.vlc3k.piasocialnetwork.configuration.security;
 
 import java.io.IOException;
 

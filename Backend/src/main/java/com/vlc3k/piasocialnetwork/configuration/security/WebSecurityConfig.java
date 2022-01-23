@@ -1,4 +1,4 @@
-package com.vlc3k.piasocialnetwork.configuration;
+package com.vlc3k.piasocialnetwork.configuration.security;
 
 import com.vlc3k.piasocialnetwork.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -54,9 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                    .antMatchers("/auth/**").permitAll()
-                    .antMatchers("/swagger-ui/**").permitAll()
-                    .antMatchers("/v3/api-docs/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/v3/api-docs/**").permitAll()
+                .antMatchers("/public/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

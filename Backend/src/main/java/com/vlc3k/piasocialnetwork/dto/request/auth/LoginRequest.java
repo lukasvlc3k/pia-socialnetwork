@@ -1,4 +1,4 @@
-package com.vlc3k.piasocialnetwork.dto.auth;
+package com.vlc3k.piasocialnetwork.dto.request.auth;
 
 import lombok.Getter;
 import lombok.Setter;
