@@ -108,7 +108,118 @@ export interface MeResponse {
      * @memberof MeResponse
      */
     'msg'?: string;
+    /**
+     * 
+     * @type {User}
+     * @memberof MeResponse
+     */
+    'usr'?: User;
 }
+/**
+ * 
+ * @export
+ * @interface PostCreateRequest
+ */
+export interface PostCreateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostCreateRequest
+     */
+    'content': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostCreateRequest
+     */
+    'postType'?: PostCreateRequestPostTypeEnum;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum PostCreateRequestPostTypeEnum {
+    Post = 'POST',
+    Announcment = 'ANNOUNCMENT'
+}
+
+/**
+ * 
+ * @export
+ * @interface PostDto
+ */
+export interface PostDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostDto
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof PostDto
+     */
+    'user'?: UserDto;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostDto
+     */
+    'publishedDate'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostDto
+     */
+    'postType'?: PostDtoPostTypeEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostDto
+     */
+    'postId'?: number;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum PostDtoPostTypeEnum {
+    Post = 'POST',
+    Announcment = 'ANNOUNCMENT'
+}
+
+/**
+ * 
+ * @export
+ * @interface Role
+ */
+export interface Role {
+    /**
+     * 
+     * @type {number}
+     * @memberof Role
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Role
+     */
+    'name'?: RoleNameEnum;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum RoleNameEnum {
+    User = 'ROLE_USER',
+    Admin = 'ROLE_ADMIN'
+}
+
 /**
  * 
  * @export
@@ -166,6 +277,62 @@ export enum SignupResponseStateEnum {
     InvalidName = 'INVALID_NAME'
 }
 
+/**
+ * 
+ * @export
+ * @interface User
+ */
+export interface User {
+    /**
+     * 
+     * @type {number}
+     * @memberof User
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof User
+     */
+    'password'?: string;
+    /**
+     * 
+     * @type {Set<Role>}
+     * @memberof User
+     */
+    'roles'?: Set<Role>;
+}
+/**
+ * 
+ * @export
+ * @interface UserDto
+ */
+export interface UserDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserDto
+     */
+    'id'?: number;
+}
 
 /**
  * AuthControllerApi - axios parameter creator
@@ -481,6 +648,173 @@ export class DataControllerApi extends BaseAPI {
      */
     public meResponseAdmin(options?: AxiosRequestConfig) {
         return DataControllerApiFp(this.configuration).meResponseAdmin(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * PostControllerApi - axios parameter creator
+ * @export
+ */
+export const PostControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {PostCreateRequest} postCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createPost: async (postCreateRequest: PostCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postCreateRequest' is not null or undefined
+            assertParamExists('createPost', 'postCreateRequest', postCreateRequest)
+            const localVarPath = `/posts/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postCreateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPosts: async (count?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/posts/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PostControllerApi - functional programming interface
+ * @export
+ */
+export const PostControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PostControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {PostCreateRequest} postCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createPost(postCreateRequest: PostCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(postCreateRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPosts(count?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPosts(count, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * PostControllerApi - factory interface
+ * @export
+ */
+export const PostControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PostControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {PostCreateRequest} postCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createPost(postCreateRequest: PostCreateRequest, options?: any): AxiosPromise<PostDto> {
+            return localVarFp.createPost(postCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPosts(count?: string, options?: any): AxiosPromise<Array<PostDto>> {
+            return localVarFp.getPosts(count, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PostControllerApi - object-oriented interface
+ * @export
+ * @class PostControllerApi
+ * @extends {BaseAPI}
+ */
+export class PostControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {PostCreateRequest} postCreateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public createPost(postCreateRequest: PostCreateRequest, options?: AxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).createPost(postCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} [count] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public getPosts(count?: string, options?: AxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).getPosts(count, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

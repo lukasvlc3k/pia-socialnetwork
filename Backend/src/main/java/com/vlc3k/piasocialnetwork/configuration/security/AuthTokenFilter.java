@@ -1,5 +1,7 @@
 package com.vlc3k.piasocialnetwork.configuration.security;
 
+import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.services.UserService;
 import com.vlc3k.piasocialnetwork.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
@@ -34,8 +37,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getEmailFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                User user = userService.getByEmail(username);
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        user, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

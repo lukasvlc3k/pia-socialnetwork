@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
-import styles from '../../styles/login.module.css';
+import styles from '../../styles/main-layout.module.css';
+import Posts from '../../components/posts';
 
 export default function MainPage() {
     return (
@@ -13,12 +14,19 @@ export default function MainPage() {
                 />
             </Head>
 
-            <div className={styles.header}>PIA NETWORK</div>
-            <main className={styles.loginWrapper}>
-                <div className={styles.login}>
-                    <h1>Hlavní stránka</h1>
+            <div className={styles.logo}>PIA NETWORK</div>
+            <div className={styles.header}></div>
+            <div className={styles.user}>
+                Přihlášený uživatel:
+                <br />
+                Karel Novák
+            </div>
+            <div className={styles.posts}>
+                <div className={styles.postsContainer}>
+                    <Posts />
                 </div>
-            </main>
+            </div>
+            <div className={styles.friends}>Friends</div>
         </div>
     );
 }

@@ -2,6 +2,7 @@ import {
     AuthControllerApi,
     Configuration,
     DataControllerApi,
+    PostControllerApi,
     PublicControllerApi,
 } from './api';
 import { getToken } from './utils/login';
@@ -15,3 +16,4 @@ const defaultConfig: Configuration = new Configuration({
 
 export const authController = new AuthControllerApi(defaultConfig);
 export const publicController = new PublicControllerApi(defaultConfig);
+export const postController = new PostControllerApi(defaultConfig, apiBasePath, axios);

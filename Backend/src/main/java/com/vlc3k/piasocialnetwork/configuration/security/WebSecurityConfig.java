@@ -1,5 +1,6 @@
 package com.vlc3k.piasocialnetwork.configuration.security;
 
+import com.vlc3k.piasocialnetwork.services.UserService;
 import com.vlc3k.piasocialnetwork.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,10 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter(jwtUtils, userDetailsService);
+        return new AuthTokenFilter(jwtUtils, userDetailsService, userService);
     }
 
     @Override

@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface RoleService {
     Role getByName(ERole name);
+
     Optional<Role> tryGetByName(ERole name);
 }
