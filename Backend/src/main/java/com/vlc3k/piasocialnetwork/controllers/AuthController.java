@@ -49,6 +49,14 @@ public class AuthController {
                     .body(SignupResponse.Error(ESignupState.INVALID_EMAIL));
         }
 
+        // Test if name valid
+        // Some people maybe don`t have a surname, not required. Minimum 3 chars for a name
+        if (signUpRequest.getName().trim().length() < 3) {
+            return ResponseEntity
+                    .ok()
+                    .body(SignupResponse.Error(ESignupState.INVALID_NAME));
+        }
+
         // Test if email is unique
         if (userService.existsEmail(signUpRequest.getEmail())) {
             return ResponseEntity

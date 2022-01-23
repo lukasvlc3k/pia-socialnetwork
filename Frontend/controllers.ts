@@ -1,12 +1,17 @@
-import { AuthControllerApi, Configuration } from './api';
+import {
+    AuthControllerApi,
+    Configuration,
+    DataControllerApi,
+    PublicControllerApi,
+} from './api';
+import { getToken } from './utils/login';
+import { axios } from './utils/axios';
+import { apiBasePath } from './consts/general';
 
 const defaultConfig: Configuration = new Configuration({
-    basePath: 'http://localhost:8080',
-    accessToken: getAccessToken,
+    basePath: apiBasePath,
+    accessToken: getToken,
 });
 
-async function getAccessToken(): Promise<string> {
-    return '';
-}
-
 export const authController = new AuthControllerApi(defaultConfig);
+export const publicController = new PublicControllerApi(defaultConfig);

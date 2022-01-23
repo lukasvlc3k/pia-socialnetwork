@@ -17,7 +17,6 @@ import java.util.Optional;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@RequestScope
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository repo;
 

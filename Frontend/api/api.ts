@@ -162,7 +162,8 @@ export enum SignupResponseStateEnum {
     Ok = 'OK',
     EmailInUse = 'EMAIL_IN_USE',
     WeakPassword = 'WEAK_PASSWORD',
-    InvalidEmail = 'INVALID_EMAIL'
+    InvalidEmail = 'INVALID_EMAIL',
+    InvalidName = 'INVALID_NAME'
 }
 
 

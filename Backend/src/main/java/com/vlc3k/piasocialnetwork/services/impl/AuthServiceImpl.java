@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@RequestScope
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;

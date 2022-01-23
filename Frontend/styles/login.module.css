@@ -6,7 +6,7 @@
 
     grid:
         [header-start] 'header header header' 60px [header-end]
-        [main-start] 'a login b' auto [main-end]
+        [main-start] 'a form b' auto [main-end]
         / 1fr minmax(350px, 2fr) 1fr;
 
     place-items: stretch;
@@ -33,16 +33,25 @@
     color: white;
 }
 
-.login {
-    grid-area: login;
+.loginWrapper {
+    grid-area: form;
     overflow-y: auto;
 
     height: auto;
-    max-height: 300px;
     margin-top: 100px;
+    padding: 10px;
 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+.login {
+    width: 100%;
+    max-width: 600px;
     border-radius: 10px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
     background-color: white;
 
     padding: 20px

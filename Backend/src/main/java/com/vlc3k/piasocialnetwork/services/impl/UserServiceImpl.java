@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 import org.webjars.NotFoundException;
 
 import java.util.HashSet;
@@ -21,7 +20,6 @@ import java.util.Set;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@RequestScope
 public class UserServiceImpl implements UserService {
     private final UserRepository repo;
     private final PasswordEncoder passwordEncoder;
