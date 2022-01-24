@@ -141,7 +141,7 @@ export interface PostCreateRequest {
     */
 export enum PostCreateRequestPostTypeEnum {
     Post = 'POST',
-    Announcment = 'ANNOUNCMENT'
+    Announcement = 'ANNOUNCEMENT'
 }
 
 /**
@@ -188,7 +188,7 @@ export interface PostDto {
     */
 export enum PostDtoPostTypeEnum {
     Post = 'POST',
-    Announcment = 'ANNOUNCMENT'
+    Announcement = 'ANNOUNCEMENT'
 }
 
 /**
@@ -696,10 +696,12 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 
          * @param {string} [count] 
+         * @param {string} [newerThan] 
+         * @param {string} [olderThan] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPosts: async (count?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getPosts: async (count?: string, newerThan?: string, olderThan?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/posts/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -714,6 +716,14 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
 
             if (count !== undefined) {
                 localVarQueryParameter['count'] = count;
+            }
+
+            if (newerThan !== undefined) {
+                localVarQueryParameter['newerThan'] = newerThan;
+            }
+
+            if (olderThan !== undefined) {
+                localVarQueryParameter['olderThan'] = olderThan;
             }
 
 
@@ -750,11 +760,13 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} [count] 
+         * @param {string} [newerThan] 
+         * @param {string} [olderThan] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPosts(count?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostDto>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPosts(count, options);
+        async getPosts(count?: string, newerThan?: string, olderThan?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPosts(count, newerThan, olderThan, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -779,11 +791,13 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
         /**
          * 
          * @param {string} [count] 
+         * @param {string} [newerThan] 
+         * @param {string} [olderThan] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPosts(count?: string, options?: any): AxiosPromise<Array<PostDto>> {
-            return localVarFp.getPosts(count, options).then((request) => request(axios, basePath));
+        getPosts(count?: string, newerThan?: string, olderThan?: string, options?: any): AxiosPromise<Array<PostDto>> {
+            return localVarFp.getPosts(count, newerThan, olderThan, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -809,12 +823,14 @@ export class PostControllerApi extends BaseAPI {
     /**
      * 
      * @param {string} [count] 
+     * @param {string} [newerThan] 
+     * @param {string} [olderThan] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostControllerApi
      */
-    public getPosts(count?: string, options?: AxiosRequestConfig) {
-        return PostControllerApiFp(this.configuration).getPosts(count, options).then((request) => request(this.axios, this.basePath));
+    public getPosts(count?: string, newerThan?: string, olderThan?: string, options?: AxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).getPosts(count, newerThan, olderThan, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

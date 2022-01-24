@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import styles from '../../styles/main-layout.module.css';
 import Posts from '../../components/posts';
 
 export default function MainPage() {
+    const listInnerRef = useRef();
+
+    const onScroll = () => {
+        if (listInnerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+            if (scrollTop + clientHeight === scrollHeight) {
+                console.log('reached bottom');
+            }
+        }
+    };
+
     return (
         <div className={styles.layoutwrapper}>
             <Head>
@@ -21,11 +32,8 @@ export default function MainPage() {
                 <br />
                 Karel Novák
             </div>
-            <div className={styles.posts}>
-                <div className={styles.postsContainer}>
-                    <Posts />
-                </div>
-            </div>
+
+            <Posts />
             <div className={styles.friends}>Friends</div>
         </div>
     );

@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
         var post = Post.builder()
                 .postType(postType)
                 .content(content)
-                .datePublished(new Date())
+                .timestampPublished(new Date().getTime())
                 .user(user)
                 .build();
         post = repository.save(post);
@@ -46,23 +46,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getVisiblePostsNewer(Date datetime, User user, Pageable pageable) {
+    public List<Post> getVisiblePostsNewer(long datetime, User user, Pageable pageable) {
         return repository.findVisibleNewer(user.getId(), datetime, pageable);
     }
 
     @Override
-    public List<Post> getVisiblePostsNewer(Date datetime, Pageable pageable) {
+    public List<Post> getVisiblePostsNewer(long datetime, Pageable pageable) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return this.getVisiblePostsNewer(datetime, currentUser, pageable);
     }
 
     @Override
-    public List<Post> getVisiblePostsOlder(Date datetime, User user, Pageable pageable) {
+    public List<Post> getVisiblePostsNewerOlder(long olderThan, long newerThan, User user, Pageable pageable) {
+        return repository.findVisibleNewerOlder(user.getId(), olderThan, newerThan, pageable);
+    }
+
+    @Override
+    public List<Post> getVisiblePostsNewerOlder(long olderThan, long newerThan, Pageable pageable) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return getVisiblePostsNewerOlder(olderThan, newerThan, currentUser, pageable);
+    }
+
+    @Override
+    public List<Post> getVisiblePostsOlder(long datetime, User user, Pageable pageable) {
         return repository.findVisibleOlder(user.getId(), datetime, pageable);
     }
 
     @Override
-    public List<Post> getVisiblePostsOlder(Date datetime, Pageable pageable) {
+    public List<Post> getVisiblePostsOlder(long datetime, Pageable pageable) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return this.getVisiblePostsOlder(datetime, currentUser, pageable);
     }

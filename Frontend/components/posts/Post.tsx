@@ -22,7 +22,7 @@ export default function Post(props: PostProps) {
             <div
                 className={styles.header}
                 style={
-                    props.post.postType === PostDtoPostTypeEnum.Announcment
+                    props.post.postType === PostDtoPostTypeEnum.Announcement
                         ? { backgroundColor: '#C03221' }
                         : {}
                 }
@@ -30,7 +30,7 @@ export default function Post(props: PostProps) {
                 <div className={styles.user}>{props.post.user?.name}</div>
                 <div
                     className={styles.date}
-                    title={moment(props.post.publishedDate).format('DD.MM.yyyy HH:mm')}
+                    title={moment(props.post.publishedDate).format('DD.MM.yyyy HH:mm:ss')}
                 >
                     {moment(props.post.publishedDate).fromNow()}
                 </div>

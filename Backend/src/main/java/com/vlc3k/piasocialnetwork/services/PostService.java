@@ -15,12 +15,17 @@ public interface PostService {
 
     Post createNewPost(User user, String content, EPostType postType);
 
-    List<Post> getVisiblePostsNewer(Date datetime, User user, Pageable pageable);
+    List<Post> getVisiblePostsNewer(long datetime, User user, Pageable pageable);
 
-    List<Post> getVisiblePostsNewer(Date datetime, Pageable pageable);
+    List<Post> getVisiblePostsNewer(long datetime, Pageable pageable);
 
 
-    List<Post> getVisiblePostsOlder(Date datetime, User user, Pageable pageable);
+    List<Post> getVisiblePostsNewerOlder(long olderThan, long newerThan, User user, Pageable pageable);
 
-    List<Post> getVisiblePostsOlder(Date datetime, Pageable pageable);
+    List<Post> getVisiblePostsNewerOlder(long olderThan, long newerThan, Pageable pageable);
+
+
+    List<Post> getVisiblePostsOlder(long datetime, User user, Pageable pageable);
+
+    List<Post> getVisiblePostsOlder(long datetime, Pageable pageable);
 }

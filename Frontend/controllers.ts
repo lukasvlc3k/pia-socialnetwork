@@ -1,7 +1,6 @@
 import {
     AuthControllerApi,
     Configuration,
-    DataControllerApi,
     PostControllerApi,
     PublicControllerApi,
 } from './api';

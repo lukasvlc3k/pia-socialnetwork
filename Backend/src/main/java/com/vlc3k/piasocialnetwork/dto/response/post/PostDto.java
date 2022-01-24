@@ -23,7 +23,7 @@ public class PostDto {
 
     public PostDto(Post post) {
         this.content = post.getContent();
-        this.publishedDate = post.getDatePublished();
+        this.publishedDate = new Date(post.getTimestampPublished());
         this.postType = post.getPostType();
         this.postId = post.getId();
 
