@@ -29,10 +29,12 @@
     grid-area: header;
     background-color: #1D3461;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     display: flex;
+    flex-direction: row;
     min-height: 50px;
     color: white;
+    padding-right: 30px;
 }
 
 .user {

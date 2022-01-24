@@ -29,3 +29,9 @@ h2{
   font-size: 1.6rem;
 }
 h3{}
+
+
+.container{
+  width: 100%;
+  max-width: 800px;
+}

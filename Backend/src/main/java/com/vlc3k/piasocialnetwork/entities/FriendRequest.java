@@ -1,10 +1,18 @@
 package com.vlc3k.piasocialnetwork.entities;
 
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity(name = "FriendRequest")
 @Table(name = "friend_request")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class FriendRequest {
+    @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
     @Column(nullable = false, updatable = false)
@@ -17,25 +25,4 @@ public class FriendRequest {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_to_id", referencedColumnName = "id")
     private User userTo;
-
-
-    public long getId() {
-        return id;
-    }
-
-    public User getUserFrom() {
-        return userFrom;
-    }
-
-    public void setUserFrom(User userFrom) {
-        this.userFrom = userFrom;
-    }
-
-    public User getUserTo() {
-        return userTo;
-    }
-
-    public void setUserTo(User userTo) {
-        this.userTo = userTo;
-    }
 }

@@ -5,26 +5,20 @@ import com.vlc3k.piasocialnetwork.dto.response.post.PostDto;
 import com.vlc3k.piasocialnetwork.entities.Post;
 import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.services.PostService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
-public class PostController {
+public class PostsController {
     private final PostService postService;
-
 
     @PostMapping("/")
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
@@ -46,28 +40,6 @@ public class PostController {
         return ResponseEntity.ok(postDto);
     }
 
-    private Pageable getPageable(String countS) {
-        int count = 0;
-        try {
-            count = Integer.parseInt(countS);
-        } catch (Exception ignored) {
-        }
-
-        return count < 0 ? Pageable.unpaged() : PageRequest.of(0, count);
-    }
-
-    private Optional<Long> getDateTimestamp(String dateS) {
-        try {
-            long dateLong = Long.parseLong(dateS);
-            if (dateLong < 0) {
-                return Optional.empty();
-            }
-            //Date dt = new Date(dateLong);
-            return Optional.of(dateLong);
-        } catch (Exception ex) {
-            return Optional.empty();
-        }
-    }
 
     @GetMapping("/")
     public ResponseEntity<List<PostDto>> getPosts(@RequestParam(required = false, defaultValue = "10", name = "count") String countS,
@@ -76,10 +48,10 @@ public class PostController {
                                                   /*@AuthenticationPrincipal User authorizedUser*/) {
         User authorizedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        var pageable = getPageable(countS);
+        var pageable = utils.getPageable(countS);
 
-        var newerThanDate = getDateTimestamp(newerThanS);
-        var olderThanDate = getDateTimestamp(olderThanS);
+        var newerThanDate = utils.getDateTimestamp(newerThanS);
+        var olderThanDate = utils.getDateTimestamp(olderThanS);
 
         List<Post> posts;
         if (newerThanDate.isEmpty() && olderThanDate.isEmpty()) {

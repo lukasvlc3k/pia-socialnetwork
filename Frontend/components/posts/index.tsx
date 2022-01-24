@@ -129,7 +129,6 @@ export default function Posts() {
         try {
             isLoading = true;
             const last = posts.length > 0 ? posts[posts.length - 1] : null;
-            console.log('loading old posts (max 3), older then', last?.publishedDate);
 
             const res = await postController.getPosts(
                 '3',

@@ -37,6 +37,31 @@ export interface BooleanResponse {
 /**
  * 
  * @export
+ * @interface FriendRequest
+ */
+export interface FriendRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof FriendRequest
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {User}
+     * @memberof FriendRequest
+     */
+    'userFrom'?: User;
+    /**
+     * 
+     * @type {User}
+     * @memberof FriendRequest
+     */
+    'userTo'?: User;
+}
+/**
+ * 
+ * @export
  * @interface LoginRequest
  */
 export interface LoginRequest {
@@ -313,6 +338,55 @@ export interface User {
      * @memberof User
      */
     'roles'?: Set<Role>;
+    /**
+     * 
+     * @type {Set<User>}
+     * @memberof User
+     */
+    'friends'?: Set<User>;
+    /**
+     * 
+     * @type {Set<FriendRequest>}
+     * @memberof User
+     */
+    'receivedFriendRequests'?: Set<FriendRequest>;
+    /**
+     * 
+     * @type {Set<FriendRequest>}
+     * @memberof User
+     */
+    'sentFriendRequests'?: Set<FriendRequest>;
+    /**
+     * 
+     * @type {Set<UserBlock>}
+     * @memberof User
+     */
+    'blockedUsers'?: Set<UserBlock>;
+}
+/**
+ * 
+ * @export
+ * @interface UserBlock
+ */
+export interface UserBlock {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserBlock
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {User}
+     * @memberof UserBlock
+     */
+    'blockedBy'?: User;
+    /**
+     * 
+     * @type {User}
+     * @memberof UserBlock
+     */
+    'blockedUser'?: User;
 }
 /**
  * 
@@ -332,6 +406,12 @@ export interface UserDto {
      * @memberof UserDto
      */
     'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserDto
+     */
+    'email'?: string;
 }
 
 /**
@@ -653,10 +733,10 @@ export class DataControllerApi extends BaseAPI {
 
 
 /**
- * PostControllerApi - axios parameter creator
+ * PostsControllerApi - axios parameter creator
  * @export
  */
-export const PostControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+export const PostsControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
@@ -741,11 +821,11 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
 };
 
 /**
- * PostControllerApi - functional programming interface
+ * PostsControllerApi - functional programming interface
  * @export
  */
-export const PostControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PostControllerApiAxiosParamCreator(configuration)
+export const PostsControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PostsControllerApiAxiosParamCreator(configuration)
     return {
         /**
          * 
@@ -773,11 +853,11 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
 };
 
 /**
- * PostControllerApi - factory interface
+ * PostsControllerApi - factory interface
  * @export
  */
-export const PostControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PostControllerApiFp(configuration)
+export const PostsControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PostsControllerApiFp(configuration)
     return {
         /**
          * 
@@ -803,21 +883,21 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
 };
 
 /**
- * PostControllerApi - object-oriented interface
+ * PostsControllerApi - object-oriented interface
  * @export
- * @class PostControllerApi
+ * @class PostsControllerApi
  * @extends {BaseAPI}
  */
-export class PostControllerApi extends BaseAPI {
+export class PostsControllerApi extends BaseAPI {
     /**
      * 
      * @param {PostCreateRequest} postCreateRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PostControllerApi
+     * @memberof PostsControllerApi
      */
     public createPost(postCreateRequest: PostCreateRequest, options?: AxiosRequestConfig) {
-        return PostControllerApiFp(this.configuration).createPost(postCreateRequest, options).then((request) => request(this.axios, this.basePath));
+        return PostsControllerApiFp(this.configuration).createPost(postCreateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -827,10 +907,10 @@ export class PostControllerApi extends BaseAPI {
      * @param {string} [olderThan] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PostControllerApi
+     * @memberof PostsControllerApi
      */
     public getPosts(count?: string, newerThan?: string, olderThan?: string, options?: AxiosRequestConfig) {
-        return PostControllerApiFp(this.configuration).getPosts(count, newerThan, olderThan, options).then((request) => request(this.axios, this.basePath));
+        return PostsControllerApiFp(this.configuration).getPosts(count, newerThan, olderThan, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -932,6 +1012,107 @@ export class PublicControllerApi extends BaseAPI {
      */
     public emailAvailable(email: string, options?: AxiosRequestConfig) {
         return PublicControllerApiFp(this.configuration).emailAvailable(email, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UsersControllerApi - axios parameter creator
+ * @export
+ */
+export const UsersControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} search 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchRelevantUsers: async (search: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'search' is not null or undefined
+            assertParamExists('searchRelevantUsers', 'search', search)
+            const localVarPath = `/users/results/{search}`
+                .replace(`{${"search"}}`, encodeURIComponent(String(search)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UsersControllerApi - functional programming interface
+ * @export
+ */
+export const UsersControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UsersControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} search 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchRelevantUsers(search: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchRelevantUsers(search, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UsersControllerApi - factory interface
+ * @export
+ */
+export const UsersControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UsersControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} search 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchRelevantUsers(search: string, options?: any): AxiosPromise<Array<UserDto>> {
+            return localVarFp.searchRelevantUsers(search, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UsersControllerApi - object-oriented interface
+ * @export
+ * @class UsersControllerApi
+ * @extends {BaseAPI}
+ */
+export class UsersControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} search 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersControllerApi
+     */
+    public searchRelevantUsers(search: string, options?: AxiosRequestConfig) {
+        return UsersControllerApiFp(this.configuration).searchRelevantUsers(search, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

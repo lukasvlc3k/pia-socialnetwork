@@ -2,6 +2,7 @@ package com.vlc3k.piasocialnetwork.services;
 
 import com.vlc3k.piasocialnetwork.entities.Role;
 import com.vlc3k.piasocialnetwork.entities.User;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +20,6 @@ public interface UserService {
     List<User> getUsers();
 
     boolean existsEmail(String email);
+
+    List<User> getRelevantUsers(String searchFor, Pageable pageable);
 }

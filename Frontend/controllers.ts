@@ -1,8 +1,9 @@
 import {
     AuthControllerApi,
     Configuration,
-    PostControllerApi,
+    PostsControllerApi,
     PublicControllerApi,
+    UsersControllerApi,
 } from './api';
 import { getToken } from './utils/login';
 import { axios } from './utils/axios';
@@ -15,4 +16,5 @@ const defaultConfig: Configuration = new Configuration({
 
 export const authController = new AuthControllerApi(defaultConfig);
 export const publicController = new PublicControllerApi(defaultConfig);
-export const postController = new PostControllerApi(defaultConfig, apiBasePath, axios);
+export const postController = new PostsControllerApi(defaultConfig, apiBasePath, axios);
+export const userController = new UsersControllerApi(defaultConfig, apiBasePath, axios);

@@ -7,6 +7,8 @@ import com.vlc3k.piasocialnetwork.services.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -21,12 +23,12 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repo;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<User> tryGetByEmail(String email) {
-        return repo.findByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long id) {
-        var user = repo.findById(id);
+        var user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new NotFoundException("User ID not found");
         }
@@ -56,7 +58,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(String email, String name, String password, Set<Role> roles) {
-
         var usr = new User();
         usr.setEmail(email);
         usr.setPassword(passwordEncoder.encode(password));
@@ -64,15 +65,21 @@ public class UserServiceImpl implements UserService {
 
         usr.setRoles(new HashSet<>(roles));
 
-        return repo.save(usr);
+        return userRepository.save(usr);
     }
 
     public List<User> getUsers() {
-        return repo.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public boolean existsEmail(String email) {
-        return repo.existsByEmail(email);
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public List<User> getRelevantUsers(String searchFor, Pageable pageable) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findRelevantUsers(currentUser.getId(), searchFor, pageable);
     }
 }

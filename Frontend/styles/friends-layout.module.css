@@ -1,0 +1,59 @@
+.layoutwrapper {
+    display: grid;
+
+    grid:
+        [header-start] 'logo header user' 60px [header-end]
+        [main-start] 'search search search' 2fr [main-end]
+        [requests-start] 'requests requests requests' 1fr [requests-end]
+        [blocations-start] 'blocations blocations blocations' 1fr [blocations-start]
+        / minmax(200px, 1fr) 3fr minmax(200px, 1fr);
+
+    place-items: stretch;
+    place-content: stretch;
+
+    width: 100vw;
+    height: 100vh;
+
+    gap: 0px;
+}
+
+.search {
+    grid-area: search;
+    overflow-y: auto;
+
+    height: auto;
+    margin-top: 30px;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.blocations {
+    grid-area: blocations;
+    overflow-y: auto;
+
+    height: auto;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background-color: whitesmoke;
+}
+
+.requests {
+    grid-area: requests;
+    overflow-y: auto;
+
+    height: auto;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background-color: whitesmoke;
+}

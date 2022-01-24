@@ -1,7 +1,6 @@
 package com.vlc3k.piasocialnetwork.entities;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -11,7 +10,12 @@ import java.util.Set;
 @Entity(name = "User")
 @Table(name = "user_sn") // name user is reserved by PostgreSQL
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class User {
+    @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
     @Column(nullable = false, updatable = false)
@@ -59,40 +63,4 @@ public class User {
 
     @OneToMany(mappedBy = "blockedBy")
     private Set<UserBlock> blockedUsers = new HashSet<>();
-
-
-    public long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }
