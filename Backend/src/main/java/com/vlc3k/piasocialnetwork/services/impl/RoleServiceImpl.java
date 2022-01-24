@@ -21,17 +21,8 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository repo;
 
     @Override
-    public Optional<Role> tryGetByName(ERole name) {
+    public Optional<Role> getByName(ERole name) {
         return repo.findByName(name);
     }
 
-    @Override
-    public Role getByName(ERole name) {
-        var role = tryGetByName(name);
-        if (role.isEmpty()) {
-            throw new NotFoundException("Name not found");
-        }
-
-        return role.get();
-    }
 }

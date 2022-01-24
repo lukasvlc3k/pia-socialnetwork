@@ -19,7 +19,7 @@ public class UserBlock {
     private long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "blocked_by_id", referencedColumnName = "id")
+    @JoinColumn(name = "blocked_by_id", nullable = false, referencedColumnName = "id")
     private User blockedBy;
 
     @ManyToOne(optional = false)

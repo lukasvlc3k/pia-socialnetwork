@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
@@ -6,9 +6,11 @@ import Button from 'react-bootstrap/Button';
 import { useRouter } from 'next/router';
 import styles from '../../styles/main-layout.module.css';
 import Link from 'next/link';
+import { LoggedUserContext } from '../../contexts/LoggedUserContext';
 
 export default function Header() {
     const router = useRouter();
+    const { loggedUser } = useContext(LoggedUserContext);
 
     return (
         <>
@@ -23,14 +25,15 @@ export default function Header() {
                             await router.push('/app/friends');
                         }}
                     >
-                        <FontAwesomeIcon icon={faUsers} />
+                        <FontAwesomeIcon icon={faUsers} className={'me-3'} />
+                        Přidat přátele
                     </Button>
                 </div>
             </div>
             <div className={styles.user}>
                 Přihlášený uživatel:
                 <br />
-                Karel Novák
+                {loggedUser?.name}
             </div>
         </>
     );

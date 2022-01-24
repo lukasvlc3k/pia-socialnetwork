@@ -6,7 +6,5 @@ import com.vlc3k.piasocialnetwork.enums.ERole;
 import java.util.Optional;
 
 public interface RoleService {
-    Role getByName(ERole name);
-
-    Optional<Role> tryGetByName(ERole name);
+    Optional<Role> getByName(ERole name);
 }

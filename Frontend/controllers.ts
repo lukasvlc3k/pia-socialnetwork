@@ -1,6 +1,7 @@
 import {
     AuthControllerApi,
     Configuration,
+    FriendsControllerApi,
     PostsControllerApi,
     PublicControllerApi,
     UsersControllerApi,
@@ -18,3 +19,8 @@ export const authController = new AuthControllerApi(defaultConfig);
 export const publicController = new PublicControllerApi(defaultConfig);
 export const postController = new PostsControllerApi(defaultConfig, apiBasePath, axios);
 export const userController = new UsersControllerApi(defaultConfig, apiBasePath, axios);
+export const friendController = new FriendsControllerApi(
+    defaultConfig,
+    apiBasePath,
+    axios
+);

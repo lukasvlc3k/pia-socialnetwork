@@ -6,9 +6,14 @@ import '../styles/bootstrap.scss';
 import '../styles/globals.css';
 
 import type { AppProps } from 'next/app';
+import LoggedUserProvider from '../contexts/LoggedUserContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />;
+    return (
+        <LoggedUserProvider>
+            <Component {...pageProps} />
+        </LoggedUserProvider>
+    );
 }
 
 export default MyApp;

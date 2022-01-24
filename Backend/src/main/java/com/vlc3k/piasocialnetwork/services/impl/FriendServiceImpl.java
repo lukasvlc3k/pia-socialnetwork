@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service("friendService")
 @Getter
@@ -28,7 +30,7 @@ public class FriendServiceImpl implements FriendsService {
     private final UserBlockRepository userBlockRepository;
 
     @Override
-    public FriendRequest SendFriendRequest(User toWhom) {
+    public FriendRequest sendFriendRequest(User toWhom) {
         var currentUser = utils.getCurrentUser();
         var fr = FriendRequest.builder()
                 .userFrom(currentUser)
@@ -41,34 +43,33 @@ public class FriendServiceImpl implements FriendsService {
 
     @Override
     @Transactional
-    public void AcceptFriendRequest(FriendRequest friendRequest) throws Exception {
-        var currentUser = utils.getCurrentUser();
-        if (friendRequest.getUserTo().getId() != currentUser.getId()) {
-            throw new Exception("This request is not for the current user");
+    public void acceptFriendRequest(FriendRequest friendRequest) throws AuthenticationException {
+        var currentUser = userService.getLoggedUserUpdated();
+        if (currentUser.isEmpty()) {
+            throw new AuthenticationException("Logged user not found");
         }
 
-        friendRequest.getUserFrom().getFriends().add(currentUser);
-        currentUser.getFriends().add(friendRequest.getUserTo());
+        friendRequest.getUserFrom().getFriends().add(currentUser.get());
+        currentUser.get().getFriends().add(friendRequest.getUserFrom());
 
         friendRequestRepository.delete(friendRequest);
 
-        userRepository.save(currentUser);
+        userRepository.save(currentUser.get());
         userRepository.save(friendRequest.getUserTo());
+
+        // find opposite direction friend requests and delete them
+        var opposite = friendRequestRepository.findByUserToAndUserFrom(friendRequest.getUserFrom(), friendRequest.getUserTo());
+        friendRequestRepository.deleteAll(opposite);
     }
 
     @Override
     @Transactional
-    public void RejectFriendRequest(FriendRequest friendRequest) throws Exception {
-        var currentUser = utils.getCurrentUser();
-        if (friendRequest.getUserTo().getId() != currentUser.getId()) {
-            throw new Exception("This request is not for the current user");
-        }
-
+    public void rejectFriendRequest(FriendRequest friendRequest) {
         friendRequestRepository.delete(friendRequest);
     }
 
     @Override
-    public UserBlock BlockUser(User userToBlock) {
+    public UserBlock blockUser(User userToBlock) {
         var currentUser = utils.getCurrentUser();
 
         var userBlock = UserBlock.builder()
@@ -77,11 +78,16 @@ public class FriendServiceImpl implements FriendsService {
                 .build();
 
         userBlock = userBlockRepository.save(userBlock);
+
+        // find all friend requests from that user and remove them
+        var requests = friendRequestRepository.findByUserToAndUserFrom(currentUser, userToBlock);
+        friendRequestRepository.deleteAll(requests);
+
         return userBlock;
     }
 
     @Override
-    public void UnBlockUser(User userToUnBlock) {
+    public void unBlockUser(User userToUnBlock) {
         var currentUser = utils.getCurrentUser();
 
         var userBlock = userBlockRepository.findByBlockedByAndBlockedUser(
@@ -91,6 +97,11 @@ public class FriendServiceImpl implements FriendsService {
             userBlockRepository.delete(userBlock.get());
         }
         // else nothing to do, user not blocked;
+    }
+
+    @Override
+    public void unBlockUser(UserBlock block) {
+        userBlockRepository.delete(block);
     }
 
     @Override
@@ -105,8 +116,28 @@ public class FriendServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<UserBlock> getBlockedUsers() {
-        var currentUser = utils.getCurrentUser();
-        return userBlockRepository.findByBlockedBy(currentUser);
+    public List<UserBlock> getBlockedUsers(User user) {
+        return userBlockRepository.findByBlockedBy(user);
     }
+
+    @Override
+    public boolean existFriendship(User userFrom, User userTo) {
+        return userFrom.getFriends().stream().anyMatch(u -> u.getId() == userTo.getId());
+    }
+
+    @Override
+    public boolean existFriendRequest(User userFrom, User userTo) {
+        return (long) friendRequestRepository.findByUserToAndUserFrom(userTo, userFrom).size() > 0;
+    }
+
+    @Override
+    public Optional<FriendRequest> getFriendRequestById(long id) {
+        return friendRequestRepository.findById(id);
+    }
+
+    @Override
+    public Optional<UserBlock> getUserBlockById(long id) {
+        return userBlockRepository.findById(id);
+    }
+
 }

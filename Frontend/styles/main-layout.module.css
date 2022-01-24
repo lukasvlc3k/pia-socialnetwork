@@ -90,8 +90,6 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-
-    background-color: gray;
 }
 
 .login {

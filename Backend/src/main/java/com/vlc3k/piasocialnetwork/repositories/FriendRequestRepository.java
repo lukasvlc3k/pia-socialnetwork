@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     public List<FriendRequest> findByUserFrom(User userFrom);
-
     public List<FriendRequest> findByUserTo(User userTo);
+
+    public List<FriendRequest> findByUserToAndUserFrom(User userTo, User userFrom);
 }

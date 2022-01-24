@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Head from 'next/head';
 import styles from '../styles/login.module.css';
 import Button from 'react-bootstrap/Button';
@@ -11,6 +11,7 @@ import EmailAvailabilityTextbox from '../components/auth/email-availability';
 import { SignupResponseStateEnum } from '../api';
 import { useRouter } from 'next/router';
 import { login } from '../utils/login';
+import { LoggedUserContext } from '../contexts/LoggedUserContext';
 
 export default function Registration() {
     const router = useRouter();
@@ -26,6 +27,7 @@ export default function Registration() {
     const [ok, setOk] = useState(false);
 
     const formRef = useRef(null);
+    const { loggedUser, setLoggedUser } = useContext(LoggedUserContext);
 
     function validateEmail(em: string): boolean {
         const regex = new RegExp(
@@ -63,6 +65,7 @@ export default function Registration() {
         setEmailAvailable(null);
         setName('');
     }
+
     async function handleOk() {
         setError('');
         setOk(true);
@@ -75,28 +78,34 @@ export default function Registration() {
         setTimeout(async () => {
             const res = await login(e, pw);
             if (res) {
+                setLoggedUser(res);
                 await router.push('/app');
             }
         }, 3000);
     }
+
     function handleInvalidEmail() {
         setError('Neplatný email.');
         setOk(false);
     }
+
     function handleEmailInUse() {
         setError('Tento email je již zaregistrován. Zadejte jiný.');
         setOk(false);
     }
+
     function handleInvalidName() {
         setError('Zadejte platné jméno a příjmení.');
         setOk(false);
     }
+
     function handleWeakPassword() {
         setError(
             'Vaše heslo je příliš slabé. Zkuste přidat velká a malá písmena, čísla nebo speciální znaky'
         );
         setOk(false);
     }
+
     async function signup() {
         const validationRes = validateForm();
 

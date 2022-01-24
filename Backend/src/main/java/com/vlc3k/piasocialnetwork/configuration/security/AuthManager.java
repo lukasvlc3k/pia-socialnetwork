@@ -20,14 +20,14 @@ public class AuthManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String username = (String)authentication.getPrincipal();
-        String password = (String)authentication.getCredentials();
+        String username = (String) authentication.getPrincipal();
+        String password = (String) authentication.getCredentials();
 
-        User user = userService.getByEmail(username);
-        if (user == null) {
+        var user = userService.getByEmail(username);
+        if (user.isEmpty()) {
             throw new BadCredentialsException("1000");
         }
-        if (!encoder.matches(password, user.getPassword())) {
+        if (!encoder.matches(password, user.get().getPassword())) {
             throw new BadCredentialsException("1000");
         }
 

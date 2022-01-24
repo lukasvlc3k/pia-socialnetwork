@@ -3,6 +3,7 @@ import Head from 'next/head';
 import styles from '../../styles/main-layout.module.css';
 import Posts from '../../components/posts';
 import Header from '../../components/header';
+import Friends from '../../components/friends';
 
 export default function MainPage() {
     return (
@@ -18,7 +19,9 @@ export default function MainPage() {
             <Header />
 
             <Posts />
-            <div className={styles.friends}>Friends</div>
+            <div className={styles.friends}>
+                <Friends />
+            </div>
         </div>
     );
 }

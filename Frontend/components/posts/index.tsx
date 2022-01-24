@@ -26,7 +26,7 @@ export default function Posts() {
     async function onScroll() {
         if (listInnerRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
-            if (scrollTop + clientHeight === scrollHeight) {
+            if (scrollTop + clientHeight >= scrollHeight - window.innerHeight / 4) {
                 await onScrollBottomReached();
             }
         }

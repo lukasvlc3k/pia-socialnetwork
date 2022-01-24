@@ -36,8 +36,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         var loginResponse = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        if (loginResponse.isEmpty()) {
+            return ResponseEntity.status(401).body(null);
+        }
 
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(loginResponse.get());
     }
 
     @PostMapping("/signup")
@@ -74,20 +77,20 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleService.tryGetByName(ERole.ROLE_USER)
+            Role userRole = roleService.getByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleService.tryGetByName(ERole.ROLE_ADMIN)
+                        Role adminRole = roleService.getByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
 
                         break;
                     default:
-                        Role userRole = roleService.tryGetByName(ERole.ROLE_USER)
+                        Role userRole = roleService.getByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
                 }

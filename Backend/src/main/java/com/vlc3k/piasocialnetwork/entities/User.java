@@ -30,6 +30,9 @@ public class User {
     @Column(nullable = false)
     private String password; // b-crypt
 
+    @Column(nullable = false)
+    private boolean isOnline;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -43,17 +46,17 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_friends",
             joinColumns = {
-                    @JoinColumn(name = "user1_id")
+                    @JoinColumn(name = "user1_id", referencedColumnName = "id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "user2_id")
+                    @JoinColumn(name = "user2_id", referencedColumnName = "id")
             }
     )
-    private Set<User> friends = new HashSet<>();
+    private Set<User> friends = new java.util.LinkedHashSet<>();
 
     @OneToMany(mappedBy = "userTo")
     private Set<FriendRequest> receivedFriendRequests = new HashSet<>();

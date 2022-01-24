@@ -62,6 +62,68 @@ export interface FriendRequest {
 /**
  * 
  * @export
+ * @interface FriendRequestDto
+ */
+export interface FriendRequestDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof FriendRequestDto
+     */
+    'requestId'?: number;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof FriendRequestDto
+     */
+    'userFrom'?: UserDto;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof FriendRequestDto
+     */
+    'userTo'?: UserDto;
+}
+/**
+ * 
+ * @export
+ * @interface FriendRequestNew
+ */
+export interface FriendRequestNew {
+    /**
+     * 
+     * @type {number}
+     * @memberof FriendRequestNew
+     */
+    'userId'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface FriendRequestResolve
+ */
+export interface FriendRequestResolve {
+    /**
+     * 
+     * @type {string}
+     * @memberof FriendRequestResolve
+     */
+    'resolveType'?: FriendRequestResolveResolveTypeEnum;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum FriendRequestResolveResolveTypeEnum {
+    Accept = 'ACCEPT',
+    Reject = 'REJECT',
+    Block = 'BLOCK'
+}
+
+/**
+ * 
+ * @export
  * @interface LoginRequest
  */
 export interface LoginRequest {
@@ -92,12 +154,6 @@ export interface LoginResponse {
     'token'?: string;
     /**
      * 
-     * @type {string}
-     * @memberof LoginResponse
-     */
-    'email'?: string;
-    /**
-     * 
      * @type {Array<string>}
      * @memberof LoginResponse
      */
@@ -108,6 +164,12 @@ export interface LoginResponse {
      * @memberof LoginResponse
      */
     'expiration'?: string;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof LoginResponse
+     */
+    'user'?: UserDto;
 }
 /**
  * 
@@ -216,6 +278,81 @@ export enum PostDtoPostTypeEnum {
     Announcement = 'ANNOUNCEMENT'
 }
 
+/**
+ * 
+ * @export
+ * @interface ResultBoolean
+ */
+export interface ResultBoolean {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultBoolean
+     */
+    'ok'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultBoolean
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultBoolean
+     */
+    'obj'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ResultFriendRequestDto
+ */
+export interface ResultFriendRequestDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultFriendRequestDto
+     */
+    'ok'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultFriendRequestDto
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {FriendRequestDto}
+     * @memberof ResultFriendRequestDto
+     */
+    'obj'?: FriendRequestDto;
+}
+/**
+ * 
+ * @export
+ * @interface ResultPostDto
+ */
+export interface ResultPostDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultPostDto
+     */
+    'ok'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultPostDto
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {PostDto}
+     * @memberof ResultPostDto
+     */
+    'obj'?: PostDto;
+}
 /**
  * 
  * @export
@@ -362,6 +499,12 @@ export interface User {
      * @memberof User
      */
     'blockedUsers'?: Set<UserBlock>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    'online'?: boolean;
 }
 /**
  * 
@@ -391,6 +534,19 @@ export interface UserBlock {
 /**
  * 
  * @export
+ * @interface UserBlockDto
+ */
+export interface UserBlockDto {
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof UserBlockDto
+     */
+    'user'?: UserDto;
+}
+/**
+ * 
+ * @export
  * @interface UserDto
  */
 export interface UserDto {
@@ -412,7 +568,33 @@ export interface UserDto {
      * @memberof UserDto
      */
     'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserDto
+     */
+    'canBeAddedToFriendsType'?: UserDtoCanBeAddedToFriendsTypeEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserDto
+     */
+    'online'?: boolean;
 }
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum UserDtoCanBeAddedToFriendsTypeEnum {
+    Yes = 'YES',
+    NoAlreadyFriend = 'NO_ALREADY_FRIEND',
+    NoFriendRequestPending = 'NO_FRIEND_REQUEST_PENDING',
+    NoFriendRequestSent = 'NO_FRIEND_REQUEST_SENT',
+    NoBlocked = 'NO_BLOCKED',
+    NoMe = 'NO_ME'
+}
+
 
 /**
  * AuthControllerApi - axios parameter creator
@@ -733,6 +915,412 @@ export class DataControllerApi extends BaseAPI {
 
 
 /**
+ * FriendsControllerApi - axios parameter creator
+ * @export
+ */
+export const FriendsControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {FriendRequestNew} friendRequestNew 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createNewFriendRequest: async (friendRequestNew: FriendRequestNew, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'friendRequestNew' is not null or undefined
+            assertParamExists('createNewFriendRequest', 'friendRequestNew', friendRequestNew)
+            const localVarPath = `/friends/requests`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(friendRequestNew, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyBlockedUsers: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/friends/blocks`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFriends: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/friends/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyRequests: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/friends/requests`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {FriendRequestResolve} friendRequestResolve 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resolveFriendRequest: async (id: string, friendRequestResolve: FriendRequestResolve, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('resolveFriendRequest', 'id', id)
+            // verify required parameter 'friendRequestResolve' is not null or undefined
+            assertParamExists('resolveFriendRequest', 'friendRequestResolve', friendRequestResolve)
+            const localVarPath = `/friends/requests/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(friendRequestResolve, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unblock: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('unblock', 'id', id)
+            const localVarPath = `/friends/blocks/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * FriendsControllerApi - functional programming interface
+ * @export
+ */
+export const FriendsControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = FriendsControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {FriendRequestNew} friendRequestNew 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createNewFriendRequest(friendRequestNew: FriendRequestNew, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultFriendRequestDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createNewFriendRequest(friendRequestNew, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyBlockedUsers(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserBlockDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyBlockedUsers(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyFriends(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyFriends(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyRequests(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FriendRequestDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyRequests(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {FriendRequestResolve} friendRequestResolve 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resolveFriendRequest(id: string, friendRequestResolve: FriendRequestResolve, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultFriendRequestDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resolveFriendRequest(id, friendRequestResolve, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async unblock(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultBoolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.unblock(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * FriendsControllerApi - factory interface
+ * @export
+ */
+export const FriendsControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = FriendsControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {FriendRequestNew} friendRequestNew 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createNewFriendRequest(friendRequestNew: FriendRequestNew, options?: any): AxiosPromise<ResultFriendRequestDto> {
+            return localVarFp.createNewFriendRequest(friendRequestNew, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyBlockedUsers(options?: any): AxiosPromise<Array<UserBlockDto>> {
+            return localVarFp.getMyBlockedUsers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyFriends(options?: any): AxiosPromise<Array<UserDto>> {
+            return localVarFp.getMyFriends(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyRequests(options?: any): AxiosPromise<Array<FriendRequestDto>> {
+            return localVarFp.getMyRequests(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {FriendRequestResolve} friendRequestResolve 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resolveFriendRequest(id: string, friendRequestResolve: FriendRequestResolve, options?: any): AxiosPromise<ResultFriendRequestDto> {
+            return localVarFp.resolveFriendRequest(id, friendRequestResolve, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unblock(id: string, options?: any): AxiosPromise<ResultBoolean> {
+            return localVarFp.unblock(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * FriendsControllerApi - object-oriented interface
+ * @export
+ * @class FriendsControllerApi
+ * @extends {BaseAPI}
+ */
+export class FriendsControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {FriendRequestNew} friendRequestNew 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public createNewFriendRequest(friendRequestNew: FriendRequestNew, options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).createNewFriendRequest(friendRequestNew, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public getMyBlockedUsers(options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).getMyBlockedUsers(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public getMyFriends(options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).getMyFriends(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public getMyRequests(options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).getMyRequests(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {FriendRequestResolve} friendRequestResolve 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public resolveFriendRequest(id: string, friendRequestResolve: FriendRequestResolve, options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).resolveFriendRequest(id, friendRequestResolve, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public unblock(id: string, options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).unblock(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * PostsControllerApi - axios parameter creator
  * @export
  */
@@ -833,7 +1421,7 @@ export const PostsControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createPost(postCreateRequest: PostCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostDto>> {
+        async createPost(postCreateRequest: PostCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultPostDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createPost(postCreateRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -865,7 +1453,7 @@ export const PostsControllerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createPost(postCreateRequest: PostCreateRequest, options?: any): AxiosPromise<PostDto> {
+        createPost(postCreateRequest: PostCreateRequest, options?: any): AxiosPromise<ResultPostDto> {
             return localVarFp.createPost(postCreateRequest, options).then((request) => request(axios, basePath));
         },
         /**

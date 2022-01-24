@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/login.module.css';
@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Alert, Form } from 'react-bootstrap';
 import { login } from '../utils/login';
 import { useRouter } from 'next/router';
+import { LoggedUserContext } from '../contexts/LoggedUserContext';
 
 const Login: NextPage = () => {
     const router = useRouter();
@@ -14,13 +15,16 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState('');
 
     const [error, setError] = useState('');
+    const { loggedUser, setLoggedUser } = useContext(LoggedUserContext);
 
     async function onLogin() {
-        const res = await login(email, password);
-        if (!res) {
+        const loggedUserRes = await login(email, password);
+        if (!loggedUserRes) {
             setError('Neplatné přihlašovací údaje');
         } else {
             setError('');
+            setLoggedUser(loggedUserRes);
+
             await router.push('/app');
         }
     }

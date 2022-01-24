@@ -8,10 +8,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,28 +27,13 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<User> tryGetByEmail(String email) {
+    public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public User getByEmail(String email) {
-        var user = tryGetByEmail(email);
-        if (user.isEmpty()) {
-            throw new NotFoundException("Email not found");
-        }
-
-        return user.get();
-    }
-
-    @Override
-    public User getById(Long id) {
-        var user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new NotFoundException("User ID not found");
-        }
-
-        return user.get();
+    public Optional<User> getById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Override
@@ -62,12 +47,14 @@ public class UserServiceImpl implements UserService {
         usr.setEmail(email);
         usr.setPassword(passwordEncoder.encode(password));
         usr.setName(name);
+        usr.setOnline(false);
 
         usr.setRoles(new HashSet<>(roles));
 
         return userRepository.save(usr);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getUsers() {
         return userRepository.findAll();
     }
@@ -81,5 +68,11 @@ public class UserServiceImpl implements UserService {
     public List<User> getRelevantUsers(String searchFor, Pageable pageable) {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findRelevantUsers(currentUser.getId(), searchFor, pageable);
+    }
+
+    @Override
+    public Optional<User> getLoggedUserUpdated() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return getById(currentUser.getId());
     }
 }

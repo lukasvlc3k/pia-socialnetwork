@@ -14,6 +14,7 @@ public class utils {
 
     /**
      * Returns Pageable object used for queries in repositories
+     *
      * @param count how many (top) results to get, -1 for unlimited
      * @return Pageable object
      */
