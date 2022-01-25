@@ -33,7 +33,7 @@ export default function FriendRow(props: FriendRowProps) {
                     width: '10px',
                     height: '10px',
                     borderRadius: '60px',
-                    backgroundColor: online ? 'green' : 'red',
+                    backgroundColor: online ? '#1EA896' : '#C03221',
                 }}
             />
         );
