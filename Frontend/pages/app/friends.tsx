@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import styles from '../../styles/friends-layout.module.css';
+import styles from '../../styles/friends-layout.module.scss';
 import Header from '../../components/header';
 import UsersSearch from '../../components/users-search';
 import FriendRequests from '../../components/friend-requests';
 import { friendController, userController } from '../../controllers';
 import { ShowToast } from '../../utils/alerts';
+import { UserBlockDto } from '../../api';
 import {
     FriendRequestDto,
     FriendRequestResolveResolveTypeEnum,
@@ -13,12 +14,20 @@ import {
     UserDto,
 } from '../../api';
 import { ComponentAuth } from '../../types/auth';
+import FriendRequestsSent from '../../components/friend-requests-sent';
+import UserBlocks from '../../components/user-blocks';
+import Button from 'react-bootstrap/Button';
 
 export default function Friends() {
     const [searchFor, setSearchFor] = useState('');
     const [searchResults, setSearchResults] = useState<UserDto[] | null>(null);
 
     const [friendRequests, setFriendRequest] = useState<FriendRequestDto[] | null>(null);
+    const [friendRequestsSent, setFriendRequestsSent] = useState<
+        FriendRequestDto[] | null
+    >(null);
+
+    const [userBlocks, setUserBlocks] = useState<UserBlockDto[] | null>(null);
 
     useEffect(() => {
         refreshAll();
@@ -57,6 +66,22 @@ export default function Friends() {
         }
     }
 
+    async function unblock(blockId: number | undefined): Promise<boolean> {
+        if (!blockId) {
+            return false;
+        }
+
+        const res = await friendController.unblock(blockId.toString());
+        if (res.data.ok) {
+            ShowToast('Uživatel úspěšně odblokován');
+            await refreshAll();
+            return true;
+        } else {
+            console.log(res);
+            return false;
+        }
+    }
+
     async function doSearch(value: string) {
         try {
             const res = await userController.searchRelevantUsers(value);
@@ -68,8 +93,24 @@ export default function Friends() {
 
     async function loadFriendRequests() {
         try {
-            const res = await friendController.getMyRequests();
-            setFriendRequest(res.data);
+            const resReceived = await friendController.getMyRequests();
+            setFriendRequest(resReceived.data);
+        } catch (e) {
+            console.log(e);
+        }
+
+        try {
+            const resSent = await friendController.getMyRequestsSent();
+            setFriendRequestsSent(resSent.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function loadBlocks() {
+        try {
+            const resReceived = await friendController.getMyBlockedUsers();
+            setUserBlocks(resReceived.data);
         } catch (e) {
             console.log(e);
         }
@@ -81,6 +122,7 @@ export default function Friends() {
         }
 
         await loadFriendRequests();
+        await loadBlocks();
     }
 
     return (
@@ -93,6 +135,8 @@ export default function Friends() {
                 />
             </Head>
 
+            <Header />
+
             <div className={styles.search}>
                 <UsersSearch
                     onSendFriendRequest={sendFriendRequest}
@@ -103,14 +147,17 @@ export default function Friends() {
                     setSearchResults={setSearchResults}
                 />
             </div>
-            <div className={styles.requests}>
-                <FriendRequests
-                    friendRequests={friendRequests}
-                    onFriendRequestResolve={resolveFriendRequest}
-                />
+
+            <div className={'container'}>
+                <Button onClick={refreshAll}>Aktualizovat data</Button>
             </div>
-            <div className={styles.blocations}>Blocations</div>
-            <Header />
+            <FriendRequests
+                friendRequests={friendRequests}
+                onFriendRequestResolve={resolveFriendRequest}
+            />
+            <FriendRequestsSent friendRequests={friendRequestsSent} />
+
+            <UserBlocks userBlocks={userBlocks} onUnblock={unblock} />
         </div>
     );
 }

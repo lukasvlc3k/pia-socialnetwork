@@ -42,11 +42,21 @@ public class FriendsController {
         return ResponseEntity.ok(myFriendsDto);
     }
 
-    @GetMapping("/requests")
+    @GetMapping("/requests/received")
     public ResponseEntity<List<FriendRequestDto>> getMyRequests() {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         var myRequests = friendsService.getFriendRequests(currentUser);
+        var requestsDto = myRequests.stream().map(FriendRequestDto::new).toList();
+
+        return ResponseEntity.ok(requestsDto);
+    }
+
+    @GetMapping("/requests/sent")
+    public ResponseEntity<List<FriendRequestDto>> getMyRequestsSent() {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        var myRequests = friendsService.getSentFriendRequests(currentUser);
         var requestsDto = myRequests.stream().map(FriendRequestDto::new).toList();
 
         return ResponseEntity.ok(requestsDto);

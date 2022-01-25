@@ -24,6 +24,7 @@ public interface FriendsService {
     public List<FriendRequest> getFriendRequests();
 
     public List<FriendRequest> getFriendRequests(User user);
+    public List<FriendRequest> getSentFriendRequests(User user);
 
     public List<UserBlock> getBlockedUsers(User user);
 

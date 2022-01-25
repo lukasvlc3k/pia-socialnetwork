@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import styles from '../../styles/main-layout.module.css';
+import styles from '../../styles/main-layout.module.scss';
 import Posts from '../../components/posts';
 import Header from '../../components/header';
 import Friends from '../../components/friends';

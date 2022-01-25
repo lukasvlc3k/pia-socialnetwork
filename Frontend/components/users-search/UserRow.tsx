@@ -40,10 +40,10 @@ export default function UserRow(props: UserRowProps) {
     }
 
     return (
-        <div className={styles.userWrapper}>
+        <div className={styles.rowWrapper}>
             <div>{props.user.name}</div>
             <div>{props.user.email}</div>
-            <div>
+            <div style={{ width: '210px' }}>
                 <RequestPart
                     canBeAddedToFriendsType={
                         props.user.canBeAddedToFriendsType ??

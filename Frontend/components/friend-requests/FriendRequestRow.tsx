@@ -1,6 +1,6 @@
 import React from 'react';
 import { FriendRequestDto, FriendRequestResolveResolveTypeEnum } from '../../api';
-import styles from '../../styles/friendrequests.module.scss';
+import styles from '../../styles/friends.module.scss';
 import Button from 'react-bootstrap/Button';
 
 type FriendRequestRowProps = {
@@ -11,11 +11,11 @@ type FriendRequestRowProps = {
 };
 export default function FriendRequestRow(props: FriendRequestRowProps) {
     return (
-        <div className={styles.userWrapper}>
-            <div title={props.friendRequest.userFrom?.email}>
+        <div className={styles.rowWrapper}>
+            <span title={props.friendRequest.userFrom?.email}>
                 {props.friendRequest.userFrom?.name}
-            </div>
-            <div>
+            </span>
+            <span>
                 <Button
                     variant={'success'}
                     onClick={() => {
@@ -46,7 +46,7 @@ export default function FriendRequestRow(props: FriendRequestRowProps) {
                 >
                     Zablokovat
                 </Button>
-            </div>
+            </span>
         </div>
     );
 }

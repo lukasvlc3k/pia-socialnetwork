@@ -116,6 +116,11 @@ public class FriendServiceImpl implements FriendsService {
     }
 
     @Override
+    public List<FriendRequest> getSentFriendRequests(User user) {
+        return friendRequestRepository.findByUserFrom(user);
+    }
+
+    @Override
     public List<UserBlock> getBlockedUsers(User user) {
         return userBlockRepository.findByBlockedBy(user);
     }

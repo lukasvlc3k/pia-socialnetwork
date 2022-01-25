@@ -5,7 +5,7 @@ import { PostCreateRequestPostTypeEnum, PostDto } from '../../api';
 import { ShowToast } from '../../utils/alerts';
 import Post from './Post';
 import { maxPostLength, postsRefreshInterval } from '../../consts/general';
-import styles from '../../styles/main-layout.module.css';
+import styles from '../../styles/main-layout.module.scss';
 
 export default function Posts() {
     const [posts, setPosts] = useState<PostDto[]>([]);

@@ -4,7 +4,7 @@ import { faDoorOpen, faHome, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 
 import { useRouter } from 'next/router';
-import styles from '../../styles/main-layout.module.css';
+import styles from '../../styles/main-layout.module.scss';
 import Link from 'next/link';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';
 import Auth from '../common/Auth';
@@ -45,9 +45,9 @@ export default function Header() {
                 </div>
                 <div className={styles.user}>
                     <div>
-                        Přihlášený uživatel:
+                        <small>Přihlášený uživatel:</small>
                         <br />
-                        {loggedUser?.name}
+                        <b>{loggedUser?.name}</b>
                     </div>
                     <Button
                         title={'Odhlásit se'}

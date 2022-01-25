@@ -164,12 +164,6 @@ export interface LoginResponse {
      * @memberof LoginResponse
      */
     'expiration'?: string;
-    /**
-     * 
-     * @type {UserDto}
-     * @memberof LoginResponse
-     */
-    'user'?: UserDto;
 }
 /**
  * 
@@ -543,6 +537,12 @@ export interface UserBlockDto {
      * @memberof UserBlockDto
      */
     'user'?: UserDto;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserBlockDto
+     */
+    'id'?: number;
 }
 /**
  * 
@@ -1019,7 +1019,36 @@ export const FriendsControllerApiAxiosParamCreator = function (configuration?: C
          * @throws {RequiredError}
          */
         getMyRequests: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/friends/requests`;
+            const localVarPath = `/friends/requests/received`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyRequestsSent: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/friends/requests/sent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1163,6 +1192,15 @@ export const FriendsControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyRequestsSent(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<FriendRequestDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyRequestsSent(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {FriendRequestResolve} friendRequestResolve 
          * @param {*} [options] Override http request option.
@@ -1224,6 +1262,14 @@ export const FriendsControllerApiFactory = function (configuration?: Configurati
          */
         getMyRequests(options?: any): AxiosPromise<Array<FriendRequestDto>> {
             return localVarFp.getMyRequests(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyRequestsSent(options?: any): AxiosPromise<Array<FriendRequestDto>> {
+            return localVarFp.getMyRequestsSent(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1293,6 +1339,16 @@ export class FriendsControllerApi extends BaseAPI {
      */
     public getMyRequests(options?: AxiosRequestConfig) {
         return FriendsControllerApiFp(this.configuration).getMyRequests(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FriendsControllerApi
+     */
+    public getMyRequestsSent(options?: AxiosRequestConfig) {
+        return FriendsControllerApiFp(this.configuration).getMyRequestsSent(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

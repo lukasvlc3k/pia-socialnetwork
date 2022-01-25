@@ -1,0 +1,29 @@
+.layoutwrapper {
+    display: flex;
+    flex-direction: column;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: #f7f7ff;
+
+    justify-content: flex-start;
+}
+
+
+.search {
+    overflow-y: auto;
+
+    height: 50vh;
+    margin-top: 30px;
+    padding: 10px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 800px;
+    align-self: center;
+}

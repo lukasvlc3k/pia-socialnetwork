@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserBlockDto {
     private UserDto user;
+    private long id;
 
     public UserBlockDto(UserBlock userBlock) {
         this.user = new UserDto(userBlock.getBlockedUser());
+        this.id = userBlock.getId();
     }
 }
