@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faDoorOpen, faHome, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 
 import { useRouter } from 'next/router';
@@ -12,14 +12,15 @@ import { RoleNameEnum } from '../../api';
 
 export default function Header() {
     const router = useRouter();
-    const { loggedUser } = useContext(LoggedUserContext);
+    const { loggedUser, logout } = useContext(LoggedUserContext);
 
     return (
         <>
-            <div className={styles.logo}>
-                <Link href="/app"> PIA NETWORK</Link>
-            </div>
             <div className={styles.header}>
+                <div className={styles.logo}>
+                    <Link href="/app"> PIA NETWORK</Link>
+                </div>
+
                 <div>
                     <Button
                         title={'Domů'}
@@ -42,11 +43,22 @@ export default function Header() {
                         Správa přátel
                     </Button>
                 </div>
-            </div>
-            <div className={styles.user}>
-                Přihlášený uživatel:
-                <br />
-                {loggedUser?.name}
+                <div className={styles.user}>
+                    <div>
+                        Přihlášený uživatel:
+                        <br />
+                        {loggedUser?.name}
+                    </div>
+                    <Button
+                        title={'Odhlásit se'}
+                        onClick={async () => {
+                            await logout();
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faDoorOpen} />
+                        Odhlásit se
+                    </Button>
+                </div>
             </div>
         </>
     );
