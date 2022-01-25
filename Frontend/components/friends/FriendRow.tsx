@@ -26,6 +26,19 @@ export default function FriendRow(props: FriendRowProps) {
         }
     }
 
+    function OnlineDot({ online }: { online: boolean }) {
+        return (
+            <div
+                style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '60px',
+                    backgroundColor: online ? 'green' : 'red',
+                }}
+            />
+        );
+    }
+
     useEffect(() => {
         socketBus.on(SocketEvents.MESSAGE_RECEIVED, onMessageReceived);
 
@@ -36,8 +49,7 @@ export default function FriendRow(props: FriendRowProps) {
 
     return (
         <div title={props.friend.email} className={styles.friendRow}>
-            <Badge bg={isOnline ? 'success' : 'danger'}> </Badge>{' '}
-            <div>{props.friend.name}</div>
+            <OnlineDot online={isOnline ?? false} /> <div>{props.friend.name}</div>
         </div>
     );
 }
