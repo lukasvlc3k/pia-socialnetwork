@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { friendController, userController } from '../../controllers';
+import { friendController } from '../../controllers';
 import { UserDto } from '../../api';
-import styles from '../../styles/friends.module.scss';
-import { Badge } from 'react-bootstrap';
+import FriendRow from './FriendRow';
 
 export default function Friends() {
     const [friends, setFriends] = useState<UserDto[]>([]);
@@ -18,15 +17,6 @@ export default function Friends() {
         } catch (e) {
             console.log(e);
         }
-    }
-
-    function FriendRow(props: { friend: UserDto }) {
-        return (
-            <div title={props.friend.email} className={styles.friendRow}>
-                <Badge bg={props.friend.online ? 'success' : 'danger'}> </Badge>{' '}
-                <div>{props.friend.name}</div>
-            </div>
-        );
     }
 
     return (

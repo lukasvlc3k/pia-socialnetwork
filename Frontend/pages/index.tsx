@@ -24,7 +24,6 @@ const Login: NextPage = () => {
         } else {
             setError('');
             setLoggedUser(loggedUserRes);
-
             await router.push('/app');
         }
     }

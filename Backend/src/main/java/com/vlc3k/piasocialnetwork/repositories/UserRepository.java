@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
 
-    Boolean existsByEmail(String email);
+    Boolean existsByEmailIgnoreCase(String email);
 
-    @Query("select u from User u where lower(u.name) LIKE lower(concat('%', ?2,'%')) AND (?1 NOT IN (select f.id from u.friends f)) AND (?1 NOT IN (select b.blockedUser from u.blockedUsers b)) order by u.name desc")
+    @Query("select u from User u where lower(u.name) LIKE lower(concat('%', ?2,'%')) AND (?1 NOT IN (select f.id from u.friends f)) AND (?1 NOT IN (select b.blockedUser from u.blockedUsers b)) AND NOT u.id = ?1 order by u.name desc")
     List<User> findRelevantUsers(long searcherUserId, String search, Pageable pageable);
 }

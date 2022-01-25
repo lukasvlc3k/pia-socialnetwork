@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Head from 'next/head';
 import styles from '../../styles/main-layout.module.css';
 import Posts from '../../components/posts';
 import Header from '../../components/header';
 import Friends from '../../components/friends';
+import { useSocket } from '../../utils/socket';
 
 export default function MainPage() {
     return (

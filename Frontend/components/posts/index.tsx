@@ -149,7 +149,6 @@ export default function Posts() {
     }
 
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <div className={styles.posts} onScroll={onScroll} ref={listInnerRef}>
             <div className={styles.postsContainer}>

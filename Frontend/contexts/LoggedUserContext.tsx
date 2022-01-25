@@ -1,5 +1,6 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { UserDto } from '../api';
+import { userController } from '../controllers';
 
 interface ILoggedUserProvider {
     loggedUser: UserDto | null;
@@ -15,6 +16,15 @@ export const LoggedUserContext = createContext<ILoggedUserProvider>({
 
 const LoggedUserProvider = (props: { children: any }) => {
     const [loggedUser, setLoggedUser] = useState<UserDto | null>(null);
+    useEffect(() => {
+        loadUser();
+    }, []);
+    async function loadUser() {
+        console.log('loading user');
+        const res = await userController.getCurrentUser();
+        setLoggedUser(res.data);
+    }
+
     return (
         <LoggedUserContext.Provider
             value={{

@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -32,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final UserDetailsService userDetailsService;
 
     @Value("${socialnetwork.app.jwtExpirationMs}")
     private int jwtExpirationMs;
@@ -51,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         var user = userService.getById(userDetails.getId());
         if (user.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         List<String> roles = userDetails.getAuthorities().stream()
@@ -66,4 +69,5 @@ public class AuthServiceImpl implements AuthService {
     public double passwordStrength(String password) {
         return password.length();
     }
+
 }

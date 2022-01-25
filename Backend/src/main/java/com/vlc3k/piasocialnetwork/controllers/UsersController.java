@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,6 +24,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsersController {
     private final UserService userService;
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getCurrentUser() {
+        var currentUser = userService.getLoggedUserUpdated().orElseThrow(() -> {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        });
+
+        return ResponseEntity.ok(new UserDto(currentUser));
+    }
 
     @GetMapping("/results/{search}")
     public ResponseEntity<List<UserDto>> searchRelevantUsers(@PathVariable(value = "search") String search) {
@@ -51,6 +62,8 @@ public class UsersController {
                 usr.setCanBeAddedToFriendsType(ECanBeAddedToFriendsType.NO_FRIEND_REQUEST_SENT);
             } else if (friendRequestReceivedFrom.contains(usr.getId())) {
                 usr.setCanBeAddedToFriendsType(ECanBeAddedToFriendsType.NO_FRIEND_REQUEST_PENDING);
+            } else if (usr.getId() == currentUser.getId()) {
+                usr.setCanBeAddedToFriendsType(ECanBeAddedToFriendsType.NO_ME);
             } else {
                 usr.setCanBeAddedToFriendsType(ECanBeAddedToFriendsType.YES);
             }

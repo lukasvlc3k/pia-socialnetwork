@@ -24,13 +24,11 @@ axios.interceptors.response.use(
     async function (error) {
         const status = error?.response?.status;
         if (status === StatusCodes.UNAUTHORIZED) {
-            console.log('Unauthorized, redirecting...', Router.asPath);
-            if (Router.basePath !== '') {
+            console.log('Unauthorized, redirecting...');
+
+            if (Router.pathname !== '/') {
                 await Router.replace({
                     pathname: '/',
-                    query: {
-                        backUrl: encodeURIComponent(Router.asPath),
-                    },
                 });
             }
         } else if (status === StatusCodes.FORBIDDEN) {

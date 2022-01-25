@@ -15,8 +15,12 @@ const defaultConfig: Configuration = new Configuration({
     accessToken: getToken,
 });
 
-export const authController = new AuthControllerApi(defaultConfig);
-export const publicController = new PublicControllerApi(defaultConfig);
+export const authController = new AuthControllerApi(defaultConfig, apiBasePath, axios);
+export const publicController = new PublicControllerApi(
+    defaultConfig,
+    apiBasePath,
+    axios
+);
 export const postController = new PostsControllerApi(defaultConfig, apiBasePath, axios);
 export const userController = new UsersControllerApi(defaultConfig, apiBasePath, axios);
 export const friendController = new FriendsControllerApi(

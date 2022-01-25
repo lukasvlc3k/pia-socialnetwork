@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailIgnoreCase(email);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean existsEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return userRepository.existsByEmailIgnoreCase(email);
     }
 
     @Override
@@ -74,5 +74,11 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getLoggedUserUpdated() {
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return getById(currentUser.getId());
+    }
+
+    @Override
+    public void changeIsOnline(User user, boolean isOnline) {
+        user.setOnline(isOnline);
+        userRepository.save(user);
     }
 }

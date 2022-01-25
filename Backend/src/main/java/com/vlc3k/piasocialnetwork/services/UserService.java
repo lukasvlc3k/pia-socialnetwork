@@ -24,4 +24,6 @@ public interface UserService {
     List<User> getRelevantUsers(String searchFor, Pageable pageable);
 
     Optional<User> getLoggedUserUpdated();
+
+    void changeIsOnline(User user, boolean isOnline);
 }

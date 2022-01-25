@@ -7,11 +7,14 @@ import '../styles/globals.css';
 
 import type { AppProps } from 'next/app';
 import LoggedUserProvider from '../contexts/LoggedUserContext';
+import SocketProvider from '../contexts/SocketContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <LoggedUserProvider>
-            <Component {...pageProps} />
+            <SocketProvider>
+                <Component {...pageProps} />
+            </SocketProvider>
         </LoggedUserProvider>
     );
 }
