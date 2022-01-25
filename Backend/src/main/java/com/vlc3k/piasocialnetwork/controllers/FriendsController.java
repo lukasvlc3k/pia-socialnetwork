@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,9 @@ public class FriendsController {
             return ResponseEntity.internalServerError().body(List.of());
         }
 
-        var myFriends = currentUser.get().getFriends();
+        var myFriends = currentUser.get().getFriends().stream()
+                .sorted(Comparator.comparing(User::getName))
+                .toList();
 
         var myFriendsDto = myFriends.stream().map(UserDto::new).toList();
         return ResponseEntity.ok(myFriendsDto);
