@@ -3,7 +3,6 @@
     flex-direction: column;
 
     width: 100vw;
-    height: 100vh;
 
     background-color: #f7f7ff;
 
@@ -14,7 +13,8 @@
 .search {
     overflow-y: auto;
 
-    height: 50vh;
+    max-height: 40vh;
+    min-height: 40vh;
     margin-top: 30px;
     padding: 10px;
 
