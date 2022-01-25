@@ -5,7 +5,6 @@ import styles from '../styles/login.module.css';
 import Button from 'react-bootstrap/Button';
 import Link from 'next/link';
 import { Alert, Form } from 'react-bootstrap';
-import { login } from '../utils/login';
 import { useRouter } from 'next/router';
 import { LoggedUserContext } from '../contexts/LoggedUserContext';
 
@@ -15,15 +14,15 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState('');
 
     const [error, setError] = useState('');
-    const { loggedUser, setLoggedUser } = useContext(LoggedUserContext);
+    const { login } = useContext(LoggedUserContext);
 
     async function onLogin() {
-        const loggedUserRes = await login(email, password);
-        if (!loggedUserRes) {
+        const loginRes = await login(email, password);
+
+        if (!loginRes) {
             setError('Neplatné přihlašovací údaje');
         } else {
             setError('');
-            setLoggedUser(loggedUserRes);
             await router.push('/app');
         }
     }

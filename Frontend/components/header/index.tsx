@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 
 import { useRouter } from 'next/router';
 import styles from '../../styles/main-layout.module.css';
 import Link from 'next/link';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';
+import Auth from '../common/Auth';
+import { RoleNameEnum } from '../../api';
 
 export default function Header() {
     const router = useRouter();
@@ -20,13 +22,24 @@ export default function Header() {
             <div className={styles.header}>
                 <div>
                     <Button
+                        title={'Domů'}
+                        onClick={async () => {
+                            await router.push('/app');
+                        }}
+                        className={'me-2'}
+                    >
+                        <FontAwesomeIcon icon={faHome} className={'me-3'} />
+                        Domů
+                    </Button>
+
+                    <Button
                         title={'Přátelé'}
                         onClick={async () => {
                             await router.push('/app/friends');
                         }}
                     >
                         <FontAwesomeIcon icon={faUsers} className={'me-3'} />
-                        Přidat přátele
+                        Správa přátel
                     </Button>
                 </div>
             </div>

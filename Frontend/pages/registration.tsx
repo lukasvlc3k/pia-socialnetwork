@@ -10,7 +10,6 @@ import { PasswordSecurityLevels } from '../consts/general';
 import EmailAvailabilityTextbox from '../components/auth/email-availability';
 import { SignupResponseStateEnum } from '../api';
 import { useRouter } from 'next/router';
-import { login } from '../utils/login';
 import { LoggedUserContext } from '../contexts/LoggedUserContext';
 
 export default function Registration() {
@@ -27,7 +26,7 @@ export default function Registration() {
     const [ok, setOk] = useState(false);
 
     const formRef = useRef(null);
-    const { loggedUser, setLoggedUser } = useContext(LoggedUserContext);
+    const { login } = useContext(LoggedUserContext);
 
     function validateEmail(em: string): boolean {
         const regex = new RegExp(
@@ -78,7 +77,6 @@ export default function Registration() {
         setTimeout(async () => {
             const res = await login(e, pw);
             if (res) {
-                setLoggedUser(res);
                 await router.push('/app');
             }
         }, 3000);

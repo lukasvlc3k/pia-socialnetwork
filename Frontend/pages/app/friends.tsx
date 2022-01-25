@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import styles from '../../styles/friends-layout.module.css';
-import Posts from '../../components/posts';
 import Header from '../../components/header';
 import UsersSearch from '../../components/users-search';
 import FriendRequests from '../../components/friend-requests';
@@ -10,9 +9,10 @@ import { ShowToast } from '../../utils/alerts';
 import {
     FriendRequestDto,
     FriendRequestResolveResolveTypeEnum,
+    RoleNameEnum,
     UserDto,
 } from '../../api';
-import FriendRequestRow from '../../components/friend-requests/FriendRequestRow';
+import { ComponentAuth } from '../../types/auth';
 
 export default function Friends() {
     const [searchFor, setSearchFor] = useState('');
@@ -35,6 +35,7 @@ export default function Friends() {
             return false;
         }
     }
+
     async function resolveFriendRequest(
         requestId: number | undefined,
         resolveType: FriendRequestResolveResolveTypeEnum
@@ -64,6 +65,7 @@ export default function Friends() {
             console.log(e);
         }
     }
+
     async function loadFriendRequests() {
         try {
             const res = await friendController.getMyRequests();
@@ -112,3 +114,4 @@ export default function Friends() {
         </div>
     );
 }
+Friends.auth = new ComponentAuth(RoleNameEnum.User);

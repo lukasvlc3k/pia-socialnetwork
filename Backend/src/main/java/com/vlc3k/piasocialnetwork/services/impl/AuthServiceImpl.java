@@ -2,7 +2,6 @@ package com.vlc3k.piasocialnetwork.services.impl;
 
 import com.vlc3k.piasocialnetwork.configuration.security.JwtUtils;
 import com.vlc3k.piasocialnetwork.dto.response.auth.LoginResponse;
-import com.vlc3k.piasocialnetwork.dto.response.user.UserDto;
 import com.vlc3k.piasocialnetwork.services.AuthService;
 import com.vlc3k.piasocialnetwork.services.RoleService;
 import com.vlc3k.piasocialnetwork.services.UserService;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -52,17 +50,13 @@ public class AuthServiceImpl implements AuthService {
         String jwt = jwtUtils.generateJwtToken(authentication, expiration);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var user = userService.getById(userDetails.getId());
-        if (user.isEmpty()) {
-            return Optional.empty();
-        }
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         return Optional.of(new LoginResponse(jwt,
-                roles, expiration, new UserDto(user.get())));
+                roles, expiration));
     }
 
     @Override

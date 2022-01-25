@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import styles from '../../styles/main-layout.module.css';
 import Posts from '../../components/posts';
 import Header from '../../components/header';
 import Friends from '../../components/friends';
-import { useSocket } from '../../utils/socket';
+import { ComponentAuth } from '../../types/auth';
+import { RoleNameEnum } from '../../api';
 
 export default function MainPage() {
     return (
@@ -26,3 +27,5 @@ export default function MainPage() {
         </div>
     );
 }
+
+MainPage.auth = new ComponentAuth(RoleNameEnum.User);

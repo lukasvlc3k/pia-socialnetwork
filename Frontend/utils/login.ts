@@ -1,7 +1,7 @@
 import { authController } from '../controllers';
 import { LoginResponse, UserDto } from '../api';
 
-export async function login(email: string, password: string): Promise<UserDto | null> {
+export async function loginUser(email: string, password: string): Promise<boolean> {
     try {
         const loginRes = await authController.loginUser({ email, password });
 
@@ -9,17 +9,22 @@ export async function login(email: string, password: string): Promise<UserDto | 
 
         if (data && data.token) {
             localStorage.setItem('token', JSON.stringify(data));
-            return data.user ?? null;
+            return true;
         }
     } catch (e) {
         if (e instanceof Error) {
             if (e.message.includes('status code 401')) {
-                return null;
+                return false;
             }
         }
     }
 
-    return null;
+    return false;
+}
+
+export async function logoutUser(): Promise<boolean> {
+    localStorage.clear();
+    return true;
 }
 export async function getTokenData(): Promise<LoginResponse | null> {
     const dataJSON = localStorage.getItem('token');
