@@ -2,6 +2,7 @@ package com.vlc3k.piasocialnetwork.services;
 
 import com.vlc3k.piasocialnetwork.entities.Role;
 import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.enums.ERole;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
@@ -26,4 +27,9 @@ public interface UserService {
     Optional<User> getLoggedUserUpdated();
 
     void changeIsOnline(User user, boolean isOnline);
+
+
+
+    void addRole(User user, Role role);
+    void removeRole(User user, Role role);
 }

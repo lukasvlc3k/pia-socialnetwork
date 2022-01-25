@@ -350,6 +350,31 @@ export interface ResultPostDto {
 /**
  * 
  * @export
+ * @interface ResultString
+ */
+export interface ResultString {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultString
+     */
+    'ok'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultString
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultString
+     */
+    'obj'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Role
  */
 export interface Role {
@@ -376,6 +401,19 @@ export enum RoleNameEnum {
     Admin = 'ROLE_ADMIN'
 }
 
+/**
+ * 
+ * @export
+ * @interface SetAdminRequest
+ */
+export interface SetAdminRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SetAdminRequest
+     */
+    'addAdmin'?: boolean;
+}
 /**
  * 
  * @export
@@ -499,6 +537,12 @@ export interface User {
      * @memberof User
      */
     'online'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    'admin'?: boolean;
 }
 /**
  * 
@@ -576,6 +620,12 @@ export interface UserDto {
     'canBeAddedToFriendsType'?: UserDtoCanBeAddedToFriendsTypeEnum;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof UserDto
+     */
+    'roles'?: Array<UserDtoRolesEnum>;
+    /**
+     * 
      * @type {boolean}
      * @memberof UserDto
      */
@@ -593,6 +643,14 @@ export enum UserDtoCanBeAddedToFriendsTypeEnum {
     NoFriendRequestSent = 'NO_FRIEND_REQUEST_SENT',
     NoBlocked = 'NO_BLOCKED',
     NoMe = 'NO_ME'
+}
+/**
+    * @export
+    * @enum {string}
+    */
+export enum UserDtoRolesEnum {
+    User = 'ROLE_USER',
+    Admin = 'ROLE_ADMIN'
 }
 
 
@@ -1728,6 +1786,45 @@ export const UsersControllerApiAxiosParamCreator = function (configuration?: Con
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {string} id 
+         * @param {SetAdminRequest} setAdminRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAdmin: async (id: string, setAdminRequest: SetAdminRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('setAdmin', 'id', id)
+            // verify required parameter 'setAdminRequest' is not null or undefined
+            assertParamExists('setAdmin', 'setAdminRequest', setAdminRequest)
+            const localVarPath = `/users/{id}/admin`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setAdminRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1757,6 +1854,17 @@ export const UsersControllerApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.searchRelevantUsers(search, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @param {string} id 
+         * @param {SetAdminRequest} setAdminRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setAdmin(id: string, setAdminRequest: SetAdminRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultString>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setAdmin(id, setAdminRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -1783,6 +1891,16 @@ export const UsersControllerApiFactory = function (configuration?: Configuration
          */
         searchRelevantUsers(search: string, options?: any): AxiosPromise<Array<UserDto>> {
             return localVarFp.searchRelevantUsers(search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {SetAdminRequest} setAdminRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAdmin(id: string, setAdminRequest: SetAdminRequest, options?: any): AxiosPromise<ResultString> {
+            return localVarFp.setAdmin(id, setAdminRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1813,6 +1931,18 @@ export class UsersControllerApi extends BaseAPI {
      */
     public searchRelevantUsers(search: string, options?: AxiosRequestConfig) {
         return UsersControllerApiFp(this.configuration).searchRelevantUsers(search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {SetAdminRequest} setAdminRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersControllerApi
+     */
+    public setAdmin(id: string, setAdminRequest: SetAdminRequest, options?: AxiosRequestConfig) {
+        return UsersControllerApiFp(this.configuration).setAdmin(id, setAdminRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

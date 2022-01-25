@@ -46,12 +46,15 @@ const LoggedUserProvider = (props: { children: any }) => {
 
     async function loadUser() {
         const res = await userController.getCurrentUser();
+
+        if (res?.data?.roles) {
+            setRoles(res.data.roles);
+        }
+
         setLoggedUser(res.data);
     }
 
     async function loadData() {
-        await loadUser();
-
         const tokenData = await getTokenData();
         if (!tokenData) {
             setRoles(null);
@@ -60,6 +63,8 @@ const LoggedUserProvider = (props: { children: any }) => {
             setRoles(tokenData.roles ?? []);
             setTokenExpiration(moment(tokenData.expiration));
         }
+
+        await loadUser();
     }
 
     async function login(email: string, password: string): Promise<boolean> {

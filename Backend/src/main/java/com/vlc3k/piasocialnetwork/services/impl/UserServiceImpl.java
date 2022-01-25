@@ -2,6 +2,7 @@ package com.vlc3k.piasocialnetwork.services.impl;
 
 import com.vlc3k.piasocialnetwork.entities.Role;
 import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.enums.ERole;
 import com.vlc3k.piasocialnetwork.repositories.UserRepository;
 import com.vlc3k.piasocialnetwork.services.UserService;
 import lombok.Getter;
@@ -79,6 +80,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeIsOnline(User user, boolean isOnline) {
         user.setOnline(isOnline);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void addRole(User user, Role role) {
+        if (user.getRoles().contains(role)) {
+            // user already has this role
+            return;
+        }
+
+        user.getRoles().add(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void removeRole(User user, Role role) {
+        if (!user.getRoles().contains(role)) {
+            // user does not have this role
+            return;
+        }
+
+        user.getRoles().remove(role);
         userRepository.save(user);
     }
 }

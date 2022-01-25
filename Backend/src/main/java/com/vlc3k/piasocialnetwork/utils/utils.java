@@ -1,6 +1,7 @@
 package com.vlc3k.piasocialnetwork.utils;
 
 import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.enums.ERole;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;

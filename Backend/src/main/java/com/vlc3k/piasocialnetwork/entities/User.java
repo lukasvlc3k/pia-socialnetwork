@@ -1,5 +1,6 @@
 package com.vlc3k.piasocialnetwork.entities;
 
+import com.vlc3k.piasocialnetwork.enums.ERole;
 import lombok.*;
 
 import javax.persistence.*;
@@ -66,4 +67,9 @@ public class User {
 
     @OneToMany(mappedBy = "blockedBy")
     private Set<UserBlock> blockedUsers = new HashSet<>();
+
+
+    public boolean isAdmin() {
+        return this.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+    }
 }

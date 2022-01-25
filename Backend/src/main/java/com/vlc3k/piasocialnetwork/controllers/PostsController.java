@@ -5,6 +5,7 @@ import com.vlc3k.piasocialnetwork.dto.response.Result;
 import com.vlc3k.piasocialnetwork.dto.response.post.PostDto;
 import com.vlc3k.piasocialnetwork.entities.Post;
 import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.enums.EPostType;
 import com.vlc3k.piasocialnetwork.services.PostService;
 import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +24,19 @@ public class PostsController {
 
     @PostMapping("/")
     public ResponseEntity<Result<PostDto>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (postCreateRequest.getPostType() == EPostType.ANNOUNCEMENT && !currentUser.isAdmin()) {
+            return ResponseEntity.status(403).body(Result.err("User not authorized to create announcements"));
+        }
         if (postCreateRequest.getContent().length() > 8192) {
             // to long
             return ResponseEntity.badRequest().body(Result.err("Content too long"));
         }
-
         if (postCreateRequest.getContent().isEmpty()) {
             return ResponseEntity.badRequest().body(Result.err("Content can not be empty"));
         }
 
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var post = postService.createNewPost(currentUser, postCreateRequest.getContent(), postCreateRequest.getPostType());
 
         var postDto = new PostDto(post);

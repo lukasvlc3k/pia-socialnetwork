@@ -17,6 +17,8 @@ import { ComponentAuth } from '../../types/auth';
 import FriendRequestsSent from '../../components/friend-requests-sent';
 import UserBlocks from '../../components/user-blocks';
 import Button from 'react-bootstrap/Button';
+import FriendManagement from '../../components/friends-management';
+import { AxiosResponse } from 'axios';
 
 export default function Friends() {
     const [searchFor, setSearchFor] = useState('');
@@ -26,6 +28,7 @@ export default function Friends() {
     const [friendRequestsSent, setFriendRequestsSent] = useState<
         FriendRequestDto[] | null
     >(null);
+    const [friends, setFriends] = useState<UserDto[]>([]);
 
     const [userBlocks, setUserBlocks] = useState<UserBlockDto[] | null>(null);
 
@@ -33,16 +36,19 @@ export default function Friends() {
         refreshAll();
     }, []);
 
-    async function sendFriendRequest(userID: number): Promise<boolean> {
-        const res = await friendController.createNewFriendRequest({ userId: userID });
+    async function handleRes(res: AxiosResponse, text: string): Promise<boolean> {
         if (res.data.ok) {
-            ShowToast('Žádost úspěšně odeslána');
+            ShowToast(text);
             await refreshAll();
             return true;
         } else {
             console.log(res);
             return false;
         }
+    }
+    async function sendFriendRequest(userID: number): Promise<boolean> {
+        const res = await friendController.createNewFriendRequest({ userId: userID });
+        return handleRes(res, 'Žádost úspěšně odeslána');
     }
 
     async function resolveFriendRequest(
@@ -56,14 +62,7 @@ export default function Friends() {
         const res = await friendController.resolveFriendRequest(requestId.toString(), {
             resolveType,
         });
-        if (res.data.ok) {
-            ShowToast('Žádost úspěšně vyřízena');
-            await refreshAll();
-            return true;
-        } else {
-            console.log(res);
-            return false;
-        }
+        return handleRes(res, 'Žádost úspěšně vyřízena');
     }
 
     async function unblock(blockId: number | undefined): Promise<boolean> {
@@ -72,14 +71,19 @@ export default function Friends() {
         }
 
         const res = await friendController.unblock(blockId.toString());
-        if (res.data.ok) {
-            ShowToast('Uživatel úspěšně odblokován');
-            await refreshAll();
-            return true;
-        } else {
-            console.log(res);
-            return false;
+
+        return handleRes(res, 'Uživatel úspěšně odblokován');
+    }
+
+    async function setAdmin(userId: number | null, isAdmin: boolean): Promise<void> {
+        if (!userId) {
+            return;
         }
+
+        const res = await userController.setAdmin(userId.toString(), {
+            addAdmin: isAdmin,
+        });
+        handleRes(res, 'Nastaveno');
     }
 
     async function doSearch(value: string) {
@@ -116,6 +120,15 @@ export default function Friends() {
         }
     }
 
+    async function loadFriends() {
+        try {
+            const res = await friendController.getMyFriends();
+            setFriends(res.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     async function refreshAll() {
         if (searchFor.length >= 3) {
             await doSearch(searchFor);
@@ -123,6 +136,7 @@ export default function Friends() {
 
         await loadFriendRequests();
         await loadBlocks();
+        await loadFriends();
     }
 
     return (
@@ -158,6 +172,7 @@ export default function Friends() {
             <FriendRequestsSent friendRequests={friendRequestsSent} />
 
             <UserBlocks userBlocks={userBlocks} onUnblock={unblock} />
+            <FriendManagement friends={friends} onSetAdmin={setAdmin} />
         </div>
     );
 }
