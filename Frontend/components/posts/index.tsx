@@ -40,7 +40,7 @@ export default function Posts() {
         await loadOldPosts();
     }
 
-    async function onCreate(content: string): Promise<boolean> {
+    async function onCreate(content: string, asAnnouncement: boolean): Promise<boolean> {
         if (content.length === 0) {
             ShowToast('Není možné zveřejnit prázdný příspěvek', 'error', 3000, 'top');
             return false;
@@ -53,11 +53,19 @@ export default function Posts() {
         try {
             const res = await postController.createPost({
                 content: content,
-                postType: PostCreateRequestPostTypeEnum.Post,
+                postType: asAnnouncement
+                    ? PostCreateRequestPostTypeEnum.Announcement
+                    : PostCreateRequestPostTypeEnum.Post,
             });
-            ShowToast('Příspěvek byl úspěšně zveřejněn', 'success', 3000, 'top');
-            await loadNewPosts();
-            return true;
+            if (res.data.ok) {
+                ShowToast('Příspěvek byl úspěšně zveřejněn', 'success', 3000, 'top');
+                await loadNewPosts();
+                return true;
+            } else {
+                ShowToast('Došlo k chybě při odesílání příspěvku.', 'error', 3000, 'top');
+                console.log(res);
+                return false;
+            }
         } catch (e) {
             console.log(e);
         }
