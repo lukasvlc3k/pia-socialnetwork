@@ -26,7 +26,7 @@ export default function ChatBox() {
         return () => {
             socketBus.off(SocketEvents.MESSAGE_RECEIVED, onMessageReceived);
         };
-    }, []);
+    }, [chatWith]);
 
     useEffect(() => {
         scrollToBottom();
