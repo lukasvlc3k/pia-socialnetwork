@@ -136,7 +136,13 @@ public class SocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        var message = chatMessageService.AddMessage(authorizedSession.getUser(), recipient.get(), chatMessage.getMessage());
+        String messageText = chatMessage.getMessage();
+        if (messageText.length() > 200) {
+            // message will be truncated (user was warned)
+            messageText = messageText.substring(0, 200);
+        }
+
+        var message = chatMessageService.AddMessage(authorizedSession.getUser(), recipient.get(), messageText);
 
         var socketMessage = new SocketChatMessage(message);
 
