@@ -1,5 +1,6 @@
 import {
     AuthControllerApi,
+    ChatControllerApi,
     Configuration,
     FriendsControllerApi,
     PostsControllerApi,
@@ -28,3 +29,4 @@ export const friendController = new FriendsControllerApi(
     apiBasePath,
     axios
 );
+export const chatController = new ChatControllerApi(defaultConfig, apiBasePath, axios);

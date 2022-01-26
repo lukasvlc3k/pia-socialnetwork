@@ -55,7 +55,7 @@ export default function Header() {
                             await logout();
                         }}
                     >
-                        <FontAwesomeIcon icon={faDoorOpen} />
+                        <FontAwesomeIcon icon={faDoorOpen} className={'me-2'} />
                         Odhlásit se
                     </Button>
                 </div>

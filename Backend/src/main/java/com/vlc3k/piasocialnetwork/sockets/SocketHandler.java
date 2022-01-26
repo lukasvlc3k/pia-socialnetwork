@@ -2,9 +2,11 @@ package com.vlc3k.piasocialnetwork.sockets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vlc3k.piasocialnetwork.entities.User;
+import com.vlc3k.piasocialnetwork.services.ChatMessageService;
 import com.vlc3k.piasocialnetwork.services.JwtAuthService;
 import com.vlc3k.piasocialnetwork.services.UserService;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +31,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     private final JwtAuthService jwtAuthService;
     private final UserService userService;
-
+    private final ChatMessageService chatMessageService;
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
@@ -108,17 +111,54 @@ public class SocketHandler extends TextWebSocketHandler {
                             .content("FAIL")
                             .build()
             );
+            session.close();
             return;
         }
 
         switch (socketMessage.getType()) {
-            case AUTHORIZATION -> {
-                onUserOnlineChange(authorizedSession.getUser(), true);
-            }
+            case AUTHORIZATION -> onUserOnlineChange(authorizedSession.getUser(), true);
             case CHAT -> {
-                var chatMessage = objectMapper.readValue(socketMessage.getContent().toString(), ChatMessage.class);
-                sendMessage(session, new SocketMessage(SocketMessageType.CHAT, "ok"));
+                var chatMessage = objectMapper.readValue(jsonTextMessage.getPayload(), SocketMessageChat.class);
+                handleChatMessage(authorizedSession, chatMessage.getContent());
             }
+        }
+    }
+
+    private void handleChatMessage(AuthorizedSession authorizedSession, SocketChatMessage chatMessage) {
+        if (chatMessage.getUserFromId() != authorizedSession.getUser().getId()) {
+            // invalid user from
+            return;
+        }
+
+        var recipient = userService.getById(chatMessage.getUserToId());
+        if (recipient.isEmpty()) {
+            // recipient does not exist
+            return;
+        }
+
+        var message = chatMessageService.AddMessage(authorizedSession.getUser(), recipient.get(), chatMessage.getMessage());
+
+        var socketMessage = new SocketChatMessage(message);
+
+
+        try {
+            // send message back to sender
+            var activeSessions = getSessionsOfUser(authorizedSession.getUser().getId());
+            for (var session : activeSessions) {
+                sendMessage(session.getSession(), new SocketMessage(SocketMessageType.CHAT, socketMessage));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // send message to recipients
+            var activeSessions = getSessionsOfUser(recipient.get().getId());
+            for (var session : activeSessions) {
+                sendMessage(session.getSession(), new SocketMessage(SocketMessageType.CHAT, socketMessage));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -126,17 +166,23 @@ public class SocketHandler extends TextWebSocketHandler {
         userService.changeIsOnline(user, isOnline);
         LOG.info(user.getId() + " is " + isOnline);
 
-        var activeSessions = authorizedSessions.entrySet().stream().filter(
-                        (kv) -> kv.getValue().getSession().isOpen() && kv.getValue().getUser().getId() == user.getId())
-                .count();
+        var activeSessions = getSessionsOfUser(user.getId()).size();
         if (!isOnline && activeSessions > 0) {
             return;
         }
 
+        // get "fresh" user instance with friends
+        var usr = userService.getById(user.getId());
+        if (usr.isEmpty()) {
+            // user does not exist (was deleted in the meantime?)
+            return;
+        }
+        var friendIds = usr.get().getFriends().stream().map(User::getId).toList();
+
         authorizedSessions.forEach((key, value) -> {
             try {
                 var session = value.getSession();
-                if (session.isOpen()) {
+                if (friendIds.contains(value.getUser().getId()) && session.isOpen()) {
                     sendMessage(session, new SocketMessage(isOnline ? SocketMessageType.USER_JOIN : SocketMessageType.USER_LEAVE, user.getId()));
                 }
             } catch (IOException ex) {
@@ -145,7 +191,17 @@ public class SocketHandler extends TextWebSocketHandler {
         });
     }
 
+    private List<AuthorizedSession> getSessionsOfUser(long userId) {
+        return authorizedSessions.values().stream().filter(
+                        authorizedSession -> authorizedSession.getSession().isOpen() && authorizedSession.getUser().getId() == userId)
+                .toList();
+    }
+
     private void sendMessage(WebSocketSession webSocketSession, SocketMessage socketMessage) throws IOException {
+        if (!webSocketSession.isOpen()) {
+            return;
+        }
+
         webSocketSession.sendMessage(new TextMessage(serialize(socketMessage)));
     }
 

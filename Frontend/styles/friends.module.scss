@@ -35,12 +35,18 @@
 .friendRow {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  gap: 15px;
-  padding: 10px;
+  justify-content: space-between;
+  padding: 5px 3px;
   align-items: center;
   flex-wrap: wrap;
   background-color: white;
+
+  .namePart{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+  }
 }
 
 

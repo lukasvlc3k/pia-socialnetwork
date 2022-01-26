@@ -49,7 +49,6 @@ public class UsersController {
         }
 
         User currentUser = userService.getLoggedUserUpdated().get();
-        //User currentUser = userService.getById(loggedUser.getId()).get();
 
         var pageable = utils.getPageable(-1);
         var users = userService.getRelevantUsers(search, pageable);

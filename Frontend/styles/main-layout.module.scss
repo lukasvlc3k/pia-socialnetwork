@@ -4,10 +4,9 @@
   display: grid;
 
   grid:
-        [header-start] 'header header header' 60px [header-end]
-        [main-start] 'posts posts friends' 4fr [main-end]
-        [footer-start] 'footer1 chats footer2' 30px [footer-end]
-        / minmax(200px, 1fr) 3fr minmax(200px, 1fr);
+        [header-start] 'header header' 60px [header-end]
+        [main-start] 'posts friends' 4fr [main-end]
+        /  5fr minmax(250px, 1.5fr);
 
   place-items: stretch;
   place-content: stretch;

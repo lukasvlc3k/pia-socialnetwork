@@ -37,6 +37,56 @@ export interface BooleanResponse {
 /**
  * 
  * @export
+ * @interface ChatMessageDto
+ */
+export interface ChatMessageDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof ChatMessageDto
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof ChatMessageDto
+     */
+    'userFrom'?: UserDto;
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof ChatMessageDto
+     */
+    'userTo'?: UserDto;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChatMessageDto
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ChatMessagesDto
+ */
+export interface ChatMessagesDto {
+    /**
+     * 
+     * @type {UserDto}
+     * @memberof ChatMessagesDto
+     */
+    'chatWith'?: UserDto;
+    /**
+     * 
+     * @type {Array<ChatMessageDto>}
+     * @memberof ChatMessagesDto
+     */
+    'messages'?: Array<ChatMessageDto>;
+}
+/**
+ * 
+ * @export
  * @interface FriendRequest
  */
 export interface FriendRequest {
@@ -300,6 +350,31 @@ export interface ResultBoolean {
 /**
  * 
  * @export
+ * @interface ResultChatMessagesDto
+ */
+export interface ResultChatMessagesDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ResultChatMessagesDto
+     */
+    'ok'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResultChatMessagesDto
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {ChatMessagesDto}
+     * @memberof ResultChatMessagesDto
+     */
+    'obj'?: ChatMessagesDto;
+}
+/**
+ * 
+ * @export
  * @interface ResultFriendRequestDto
  */
 export interface ResultFriendRequestDto {
@@ -536,13 +611,13 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'online'?: boolean;
+    'admin'?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof User
      */
-    'admin'?: boolean;
+    'online'?: boolean;
 }
 /**
  * 
@@ -818,6 +893,118 @@ export class AuthControllerApi extends BaseAPI {
      */
     public registerUser(signupRequest: SignupRequest, options?: AxiosRequestConfig) {
         return AuthControllerApiFp(this.configuration).registerUser(signupRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ChatControllerApi - axios parameter creator
+ * @export
+ */
+export const ChatControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} withUserID 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getChatMessages: async (withUserID: string, count?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'withUserID' is not null or undefined
+            assertParamExists('getChatMessages', 'withUserID', withUserID)
+            const localVarPath = `/chat-messages/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (withUserID !== undefined) {
+                localVarQueryParameter['withUserID'] = withUserID;
+            }
+
+            if (count !== undefined) {
+                localVarQueryParameter['count'] = count;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ChatControllerApi - functional programming interface
+ * @export
+ */
+export const ChatControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ChatControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} withUserID 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getChatMessages(withUserID: string, count?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResultChatMessagesDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getChatMessages(withUserID, count, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ChatControllerApi - factory interface
+ * @export
+ */
+export const ChatControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ChatControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} withUserID 
+         * @param {string} [count] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getChatMessages(withUserID: string, count?: string, options?: any): AxiosPromise<ResultChatMessagesDto> {
+            return localVarFp.getChatMessages(withUserID, count, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ChatControllerApi - object-oriented interface
+ * @export
+ * @class ChatControllerApi
+ * @extends {BaseAPI}
+ */
+export class ChatControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} withUserID 
+     * @param {string} [count] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ChatControllerApi
+     */
+    public getChatMessages(withUserID: string, count?: string, options?: AxiosRequestConfig) {
+        return ChatControllerApiFp(this.configuration).getChatMessages(withUserID, count, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -8,6 +8,7 @@ import LoggedUserProvider from '../contexts/LoggedUserContext';
 import SocketProvider from '../contexts/SocketContext';
 import { SecuredComponent } from '../types/auth';
 import Auth from '../components/common/Auth';
+import ChatProvider from '../contexts/ChatContext';
 
 function MyApp({
     Component,
@@ -20,9 +21,11 @@ function MyApp({
         <LoggedUserProvider>
             {Component.auth ? (
                 <SocketProvider>
-                    <Auth minRole={Component.auth?.minRole}>
-                        <Component {...pageProps} />
-                    </Auth>
+                    <ChatProvider>
+                        <Auth minRole={Component.auth?.minRole}>
+                            <Component {...pageProps} />
+                        </Auth>
+                    </ChatProvider>
                 </SocketProvider>
             ) : (
                 <Component {...pageProps} />
