@@ -61,7 +61,41 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public double passwordStrength(String password) {
-        return password.length();
+        int n = password.length();
+        boolean hasLower = false;
+        boolean hasUpper = false;
+        boolean hasDigit = false;
+        boolean hasSpecialChar = false;
+
+        for (char i : password.toCharArray()) {
+            if (Character.isLowerCase(i))
+                hasLower = true;
+            else if (Character.isUpperCase(i))
+                hasUpper = true;
+            else if (Character.isDigit(i))
+                hasDigit = true;
+            else
+                hasSpecialChar = true;
+        }
+
+        int possibleSymbols = 0;
+        if (hasLower) {
+            possibleSymbols += 26;
+        }
+        if (hasUpper) {
+            possibleSymbols += 26;
+        }
+        if (hasDigit) {
+            possibleSymbols += 10;
+        }
+        if (hasSpecialChar) {
+            possibleSymbols += 33;
+        }
+
+        double totalCombinations = Math.pow(possibleSymbols, n);
+        double bitsOfEntropy = Math.log(totalCombinations);
+
+        return bitsOfEntropy;
     }
 
 }
