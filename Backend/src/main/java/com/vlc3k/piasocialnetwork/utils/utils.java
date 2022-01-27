@@ -2,6 +2,7 @@ package com.vlc3k.piasocialnetwork.utils;
 
 import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.enums.ERole;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,5 +45,10 @@ public class utils {
         } catch (Exception ex) {
             return Optional.empty();
         }
+    }
+
+    public static String generateRandomPassword(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        return RandomStringUtils.random(length, characters);
     }
 }

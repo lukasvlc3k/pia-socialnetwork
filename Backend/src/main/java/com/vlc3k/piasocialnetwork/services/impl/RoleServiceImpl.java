@@ -8,9 +8,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
-import org.webjars.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service("roleService")
@@ -18,11 +17,24 @@ import java.util.Optional;
 @Setter
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
-    private final RoleRepository repo;
+    private final RoleRepository roleRepository;
 
     @Override
     public Optional<Role> getByName(ERole name) {
-        return repo.findByName(name);
+        return roleRepository.findByName(name);
     }
 
+    @Override
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Role addRole(ERole name) {
+        var role = Role.builder()
+                .name(name)
+                .build();
+
+        return roleRepository.save(role);
+    }
 }

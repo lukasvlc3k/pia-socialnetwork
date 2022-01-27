@@ -28,6 +28,7 @@ public interface UserService {
 
     void changeIsOnline(User user, boolean isOnline);
 
+    List<User> findUsersInRole(ERole role);
 
 
     void addRole(User user, Role role);

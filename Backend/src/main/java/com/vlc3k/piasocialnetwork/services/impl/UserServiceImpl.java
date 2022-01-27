@@ -84,6 +84,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findUsersInRole(ERole role) {
+        return userRepository.findUsersInRole(role);
+    }
+
+    @Override
     public void addRole(User user, Role role) {
         if (user.getRoles().contains(role)) {
             // user already has this role

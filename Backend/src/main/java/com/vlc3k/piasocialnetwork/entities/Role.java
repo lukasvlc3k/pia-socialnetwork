@@ -1,9 +1,7 @@
 package com.vlc3k.piasocialnetwork.entities;
 
 import com.vlc3k.piasocialnetwork.enums.ERole;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -13,6 +11,9 @@ import java.util.Objects;
 @Table(name = "role")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Setter(AccessLevel.NONE)
     @Id
