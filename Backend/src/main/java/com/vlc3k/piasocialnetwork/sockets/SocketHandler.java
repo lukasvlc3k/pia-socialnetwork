@@ -35,8 +35,6 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
-        LOG.error("error occured at sender " + session, throwable);
-
         if (session.isOpen()) {
             session.close(CloseStatus.PROTOCOL_ERROR);
         }
@@ -45,8 +43,6 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        LOG.info(String.format("Session %s closed because of %s", session.getId(), status.getReason()));
-
         var authorizedSession = authorizedSessions.getOrDefault(session.getId(), null);
         if (authorizedSession != null) {
             onUserOnlineChange(authorizedSession.getUser(), false);
@@ -56,19 +52,9 @@ public class SocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        LOG.info("Connected " + session.getId() + " from ip " + session.getRemoteAddress().toString());
-    }
-
-    @Override
-    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
-        LOG.info("Pong " + session.getId() + ", message " + message);
-    }
-
-    @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage jsonTextMessage) throws Exception {
         val socketMessage = objectMapper.readValue(jsonTextMessage.getPayload(), SocketMessage.class);
-        LOG.info("message received: " + socketMessage);
+
         if (socketMessage == null) {
             return;
         }
@@ -104,7 +90,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
         var authorizedSession = authorizedSessions.getOrDefault(session.getId(), null);
         if (authorizedSession == null) {
-            LOG.info("Not Authorized: " + session.getId());
+            // Not authorized
             sendMessage(session,
                     SocketMessage.builder()
                             .type(SocketMessageType.AUTHORIZATION)
@@ -170,7 +156,6 @@ public class SocketHandler extends TextWebSocketHandler {
 
     private void onUserOnlineChange(User user, boolean isOnline) {
         userService.changeIsOnline(user, isOnline);
-        LOG.info(user.getId() + " is " + isOnline);
 
         var activeSessions = getSessionsOfUser(user.getId()).size();
         if (!isOnline && activeSessions > 0) {
