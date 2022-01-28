@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  server:
+    container_name: pia-socialnetwork-server
+    build:
+      dockerfile: Dockerfile
+      context: ./Backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pia-socialnetwork-db:5432/pia
+      - SPRING_DATASOURCE_USERNAME=pia
+      - SPRING_DATASOURCE_PASSWORD=HEun3RGgEYwknRuk4adh4ZKW
+
+  db:
+    image: postgres
+    container_name: pia-socialnetwork-db
+    volumes:
+      - pia-socialnetwork-data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=pia
+      - POSTGRES_PASSWORD=HEun3RGgEYwknRuk4adh4ZKW
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=pia
+    shm_size: 256MB
+
+  client:
+    container_name: pia-socialnetwork-client
+    build:
+      dockerfile: Dockerfile
+      context: ./Frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_URL="http://localhost:8080"
+
+volumes:
+  pia-socialnetwork-data:
