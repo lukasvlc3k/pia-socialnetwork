@@ -6,7 +6,14 @@ The application was created as a semestral work for KIV/PIA (University of West 
 
 ## Running the application
 
-// TODO
+1. git clone https://github.com/lukasvlc3k/pia-socialnetwork.git
+2. cd ./pia-socialnetwork
+3. docker-compose up
+
+The frontend (client) will be accessible at http://localhost:3000. Backend http://localhost:8080
+Swagger (OpenAPI): http://localhost:8080/swagger-ui/index.html
+
+A new admin account will be created during first app start, the credentials will be logged to console (log level Info)
 
 ## Core (mandatory) features
 
@@ -54,7 +61,10 @@ The application was created as a semestral work for KIV/PIA (University of West 
 
 - Open API Client Generator (Typescript + axios)
 
-More details about server and client implementation in README.md in a server/client directory.
+## Swagger (OpenAPI) documentation
 
-Start postgres server (docker)
-docker run --name pg -ePOSTGRES_PASSWORD=HEun3RGgEYwknRuk4adh4ZKW -ePOSTGRES_USER=pia -ePGDATA=/var/lib/postgresql/data/pgdata -d --rm --shm-size=256MB -p5432:5432 -v pia-pgdata:/var/lib/postgresql/data postgres
+http://localhost:8080/swagger-ui/index.html
+
+## More details
+
+More details about server and client implementation in README.md in a server/client directory.
