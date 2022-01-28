@@ -72,9 +72,7 @@ public class DataLoader implements ApplicationRunner {
                 userService.registerUser(email, "Admin", password, List.of(role.get()));
 
                 logger.info("Admin user not found, adding a new one");
-                logger.info("=== new admin info ===");
-                logger.info("email: " + email);
-                logger.info("password: " + password);
+                logger.info("\n\nNew admin credentials:\nemail: " + email+"\npassword: " + password + "\n\n");
             }
         }
     }
