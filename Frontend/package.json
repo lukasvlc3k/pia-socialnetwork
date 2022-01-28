@@ -2,12 +2,13 @@
   "name": "social-network",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "react-env --env BACKEND_URL -- next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "react-env --env BACKEND_URL -- next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@beam-australia/react-env": "^3.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",

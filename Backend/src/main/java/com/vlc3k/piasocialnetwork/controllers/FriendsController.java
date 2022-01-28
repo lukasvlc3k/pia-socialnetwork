@@ -124,7 +124,7 @@ public class FriendsController {
         return ResponseEntity.ok(Result.ok(new FriendRequestDto(friendRequest)));
     }
 
-    @PostMapping("/requests/{id}")
+    @PutMapping("/requests/{id}")
     public ResponseEntity<Result<FriendRequestDto>> resolveFriendRequest(@PathVariable(value = "id") String idS, @Valid @RequestBody FriendRequestResolve friendRequestResolve) {
         User currentUser = utils.getCurrentUser();
 

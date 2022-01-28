@@ -2,7 +2,7 @@ import { AppProps } from 'next/app';
 import { UserDtoRolesEnum } from '../api';
 
 export type SecuredComponent = AppProps['Component'] & {
-    minRole: UserDtoRolesEnum | null;
+    auth: ComponentAuth;
 };
 
 export class ComponentAuth {

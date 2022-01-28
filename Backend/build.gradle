@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.vlc3k'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()

@@ -81,7 +81,7 @@ export default function Friends() {
         }
 
         const res = await userController.setAdmin(userId.toString(), {
-            addAdmin: isAdmin,
+            adminRole: isAdmin,
         });
         handleRes(res, 'Nastaveno');
     }

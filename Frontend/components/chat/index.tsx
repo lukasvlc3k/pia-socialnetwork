@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {KeyboardEventHandler, useContext, useEffect, useRef, useState} from 'react';
 import styles from '../../styles/chat.module.scss';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';
 import Button from 'react-bootstrap/Button';
@@ -95,8 +95,8 @@ export default function ChatBox() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const handleKeyDown = (e: unknown) => {
-        if (e.key === 'Enter') {
+    const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+        if (e.key.toLowerCase() === 'enter') {
             e.preventDefault();
             sendMessage();
         }

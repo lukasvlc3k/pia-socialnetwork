@@ -1,27 +1,22 @@
 package com.vlc3k.piasocialnetwork.controllers;
 
-import com.vlc3k.piasocialnetwork.dto.request.post.PostCreateRequest;
 import com.vlc3k.piasocialnetwork.dto.request.user.SetAdminRequest;
 import com.vlc3k.piasocialnetwork.dto.response.Result;
-import com.vlc3k.piasocialnetwork.dto.response.post.PostDto;
 import com.vlc3k.piasocialnetwork.dto.response.user.UserDto;
 import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.enums.ECanBeAddedToFriendsType;
-import com.vlc3k.piasocialnetwork.enums.EPostType;
 import com.vlc3k.piasocialnetwork.enums.ERole;
 import com.vlc3k.piasocialnetwork.services.RoleService;
 import com.vlc3k.piasocialnetwork.services.UserService;
 import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.webjars.NotFoundException;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -46,8 +41,8 @@ public class UsersController {
         return ResponseEntity.ok(new UserDto(currentUser));
     }
 
-    @GetMapping("/results/{search}")
-    public ResponseEntity<List<UserDto>> searchRelevantUsers(@PathVariable(value = "search") String search) {
+    @GetMapping("/results")
+    public ResponseEntity<List<UserDto>> searchRelevantUsers(@RequestParam(value = "search") String search) {
         if (search.length() < 3) {
             // at least 3 chars must be provided
             return ResponseEntity.badRequest().body(List.of());
@@ -84,8 +79,14 @@ public class UsersController {
     }
 
 
+    /**
+     * Updates user roles
+     * @param idS
+     * @param setAdminRequest
+     * @return
+     */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/admin")
+    @PutMapping("/{id}/roles")
     public ResponseEntity<Result<String>> setAdmin(@PathVariable(value = "id") String idS, @Valid @RequestBody SetAdminRequest setAdminRequest) {
         User currentUser = utils.getCurrentUser();
 
@@ -110,7 +111,7 @@ public class UsersController {
             return ResponseEntity.internalServerError().body(Result.err("Admin role not found"));
         }
 
-        if (setAdminRequest.isAddAdmin()) {
+        if (setAdminRequest.isAdminRole()) {
             userService.addRole(user.get(), adminRole.get());
         } else {
             userService.removeRole(user.get(), adminRole.get());

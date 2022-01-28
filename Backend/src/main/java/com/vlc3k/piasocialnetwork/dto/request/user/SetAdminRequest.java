@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SetAdminRequest {
-    private boolean addAdmin;
+    private boolean adminRole;
 }
