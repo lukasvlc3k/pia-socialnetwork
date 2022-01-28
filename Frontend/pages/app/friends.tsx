@@ -10,7 +10,7 @@ import { UserBlockDto } from '../../api';
 import {
     FriendRequestDto,
     FriendRequestResolveResolveTypeEnum,
-    RoleNameEnum,
+    UserDtoRolesEnum,
     UserDto,
 } from '../../api';
 import { ComponentAuth } from '../../types/auth';
@@ -176,4 +176,4 @@ export default function Friends() {
         </div>
     );
 }
-Friends.auth = new ComponentAuth(RoleNameEnum.User);
+Friends.auth = new ComponentAuth(UserDtoRolesEnum.User);

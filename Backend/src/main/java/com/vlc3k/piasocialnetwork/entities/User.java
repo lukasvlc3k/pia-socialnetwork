@@ -44,10 +44,12 @@ public class User {
                     @JoinColumn(name = "role_id")
             }
     )
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @Builder.Default
     @JoinTable(
             name = "user_friends",
             joinColumns = {
@@ -59,12 +61,15 @@ public class User {
     )
     private Set<User> friends = new java.util.LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "userTo")
     private Set<FriendRequest> receivedFriendRequests = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "userFrom")
     private Set<FriendRequest> sentFriendRequests = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "blockedBy")
     private Set<UserBlock> blockedUsers = new HashSet<>();
 

@@ -23,7 +23,7 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Result<ChatMessagesDto>> getChatMessages(
             @RequestParam(name = "withUserID") String withUserS,
             @RequestParam(required = false, defaultValue = "10", name = "count") String countS) {

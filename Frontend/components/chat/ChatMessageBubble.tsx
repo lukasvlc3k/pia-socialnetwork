@@ -1,4 +1,4 @@
-import { ChatMessageDto, RoleNameEnum } from '../../api';
+import { ChatMessageDto, UserDtoRolesEnum } from '../../api';
 import React, { useContext } from 'react';
 import Auth from '../common/Auth';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';

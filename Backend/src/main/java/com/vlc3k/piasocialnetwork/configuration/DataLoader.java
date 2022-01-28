@@ -79,8 +79,18 @@ public class DataLoader implements ApplicationRunner {
         }
     }
 
+    private void makeAllOffline() {
+        // mark all users as offline on application start
+        var users = userService.getByOnline(true);
+
+        for (var user : users) {
+            userService.changeIsOnline(user, false);
+        }
+    }
+
     public void run(ApplicationArguments args) throws Exception {
         checkRoles();
         checkAdmin();
+        makeAllOffline();
     }
 }

@@ -2,13 +2,13 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';
 import { SecuredComponent } from '../../types/auth';
-import { RoleNameEnum } from '../../api';
+import { UserDtoRolesEnum } from '../../api';
 
 export default function Auth({
     minRole,
     children,
 }: {
-    minRole?: RoleNameEnum | null;
+    minRole?: UserDtoRolesEnum | null;
     children: ReactNode;
 }) {
     const router = useRouter();
@@ -26,7 +26,9 @@ export default function Auth({
             return true;
         }
 
-        return (roles?.includes(minRole) || roles?.includes(RoleNameEnum.Admin)) ?? false;
+        return (
+            (roles?.includes(minRole) || roles?.includes(UserDtoRolesEnum.Admin)) ?? false
+        );
     }
 
     useEffect(() => {

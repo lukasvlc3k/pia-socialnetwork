@@ -19,7 +19,6 @@ public class AuthManager implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 

@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u inner join u.roles r where r.name=?1")
     List<User> findUsersInRole(ERole role);
+
+    @Query("select u from User u where u.isOnline=?1")
+    List<User> findByIsOnline(boolean online);
 }

@@ -1,14 +1,14 @@
 import { AppProps } from 'next/app';
-import { RoleNameEnum } from '../api';
+import { UserDtoRolesEnum } from '../api';
 
 export type SecuredComponent = AppProps['Component'] & {
-    minRole: RoleNameEnum | null;
+    minRole: UserDtoRolesEnum | null;
 };
 
 export class ComponentAuth {
-    minRole: RoleNameEnum | null;
+    minRole: UserDtoRolesEnum | null;
 
-    constructor(minRole: RoleNameEnum | null = null) {
+    constructor(minRole: UserDtoRolesEnum | null = null) {
         this.minRole = minRole;
     }
 }

@@ -5,6 +5,7 @@ import com.vlc3k.piasocialnetwork.dto.response.auth.LoginResponse;
 import com.vlc3k.piasocialnetwork.services.AuthService;
 import com.vlc3k.piasocialnetwork.services.RoleService;
 import com.vlc3k.piasocialnetwork.services.UserService;
+import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -93,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         double totalCombinations = Math.pow(possibleSymbols, n);
-        double bitsOfEntropy = Math.log(totalCombinations);
+        double bitsOfEntropy = utils.log2(totalCombinations);
 
         return bitsOfEntropy;
     }

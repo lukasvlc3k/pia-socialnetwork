@@ -30,6 +30,7 @@ public interface UserService {
 
     List<User> findUsersInRole(ERole role);
 
+    List<User> getByOnline(boolean online);
 
     void addRole(User user, Role role);
     void removeRole(User user, Role role);

@@ -81,6 +81,10 @@ const LoggedUserProvider = (props: { children: any }) => {
     async function logout(): Promise<boolean> {
         const res = await logoutUser();
 
+        if (res) {
+            setLoggedUser(null);
+            setRoles(null);
+        }
         await router.push('/');
         return res;
     }

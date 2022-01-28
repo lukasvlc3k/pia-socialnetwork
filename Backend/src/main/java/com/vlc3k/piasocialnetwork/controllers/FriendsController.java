@@ -10,6 +10,7 @@ import com.vlc3k.piasocialnetwork.dto.response.user.UserDto;
 import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.services.FriendsService;
 import com.vlc3k.piasocialnetwork.services.UserService;
+import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +29,7 @@ public class FriendsController {
     private final UserService userService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<UserDto>> getMyFriends() {
         var currentUser = userService.getLoggedUserUpdated();
 
@@ -47,7 +48,7 @@ public class FriendsController {
 
     @GetMapping("/requests/received")
     public ResponseEntity<List<FriendRequestDto>> getMyRequests() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         var myRequests = friendsService.getFriendRequests(currentUser);
         var requestsDto = myRequests.stream().map(FriendRequestDto::new).toList();
@@ -57,7 +58,7 @@ public class FriendsController {
 
     @GetMapping("/requests/sent")
     public ResponseEntity<List<FriendRequestDto>> getMyRequestsSent() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         var myRequests = friendsService.getSentFriendRequests(currentUser);
         var requestsDto = myRequests.stream().map(FriendRequestDto::new).toList();
@@ -67,7 +68,7 @@ public class FriendsController {
 
     @GetMapping("/blocks")
     public ResponseEntity<List<UserBlockDto>> getMyBlockedUsers() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         var myBlocks = friendsService.getBlockedUsers(currentUser);
         var myBlocksDto = myBlocks.stream().map(UserBlockDto::new).toList();
@@ -77,7 +78,7 @@ public class FriendsController {
 
     @DeleteMapping("/blocks/{id}")
     public ResponseEntity<Result<Boolean>> unblock(@PathVariable(value = "id") String idS) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         long id;
         try {
             id = Long.parseLong(idS);
@@ -101,7 +102,7 @@ public class FriendsController {
 
     @PostMapping("/requests")
     public ResponseEntity<Result<FriendRequestDto>> createNewFriendRequest(@Valid @RequestBody FriendRequestNew friendCreateRequest) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         var userTo = userService.getById(friendCreateRequest.getUserId());
 
@@ -125,7 +126,7 @@ public class FriendsController {
 
     @PostMapping("/requests/{id}")
     public ResponseEntity<Result<FriendRequestDto>> resolveFriendRequest(@PathVariable(value = "id") String idS, @Valid @RequestBody FriendRequestResolve friendRequestResolve) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         long id;
         try {

@@ -3,7 +3,7 @@ import { FloatingLabel, Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import styles from '../../styles/post.module.scss';
 import Auth from '../common/Auth';
-import { RoleNameEnum } from '../../api';
+import { UserDtoRolesEnum } from '../../api';
 
 type NewPostProps = {
     onCreate: (content: string, asAnnouncement: boolean) => Promise<boolean>;
@@ -43,7 +43,7 @@ export default function NewPost(props: NewPostProps) {
                     <Button variant="primary" type="submit">
                         Zveřejnit
                     </Button>
-                    <Auth minRole={RoleNameEnum.Admin}>
+                    <Auth minRole={UserDtoRolesEnum.Admin}>
                         <label>
                             <input
                                 type="checkbox"

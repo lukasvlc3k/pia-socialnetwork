@@ -5,6 +5,7 @@ import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.enums.EPostType;
 import com.vlc3k.piasocialnetwork.repositories.PostRepository;
 import com.vlc3k.piasocialnetwork.services.PostService;
+import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getAllVisiblePosts(Pageable pageable) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return this.getAllVisiblePosts(currentUser, pageable);
     }
 
@@ -52,7 +53,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getVisiblePostsNewer(long datetime, Pageable pageable) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return this.getVisiblePostsNewer(datetime, currentUser, pageable);
     }
 
@@ -63,7 +64,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getVisiblePostsNewerOlder(long olderThan, long newerThan, Pageable pageable) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return getVisiblePostsNewerOlder(olderThan, newerThan, currentUser, pageable);
     }
 
@@ -74,7 +75,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getVisiblePostsOlder(long datetime, Pageable pageable) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return this.getVisiblePostsOlder(datetime, currentUser, pageable);
     }
 }

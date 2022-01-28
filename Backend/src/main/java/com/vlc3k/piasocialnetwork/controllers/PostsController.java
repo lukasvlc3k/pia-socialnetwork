@@ -22,9 +22,9 @@ import java.util.List;
 public class PostsController {
     private final PostService postService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Result<PostDto>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         if (postCreateRequest.getPostType() == EPostType.ANNOUNCEMENT && !currentUser.isAdmin()) {
             return ResponseEntity.status(403).body(Result.err("User not authorized to create announcements"));
@@ -44,12 +44,12 @@ public class PostsController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<PostDto>> getPosts(@RequestParam(required = false, defaultValue = "10", name = "count") String countS,
                                                   @RequestParam(required = false, defaultValue = "-1", name = "newerThan") String newerThanS,
                                                   @RequestParam(required = false, defaultValue = "-1", name = "olderThan") String olderThanS
             /*@AuthenticationPrincipal User authorizedUser*/) {
-        User authorizedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         var pageable = utils.getPageable(countS);
 
@@ -58,13 +58,13 @@ public class PostsController {
 
         List<Post> posts;
         if (newerThanDate.isEmpty() && olderThanDate.isEmpty()) {
-            posts = postService.getAllVisiblePosts(authorizedUser, pageable);
+            posts = postService.getAllVisiblePosts(currentUser, pageable);
         } else if (newerThanDate.isPresent() && olderThanDate.isEmpty()) {
-            posts = postService.getVisiblePostsNewer(newerThanDate.get(), authorizedUser, pageable);
+            posts = postService.getVisiblePostsNewer(newerThanDate.get(), currentUser, pageable);
         } else if (newerThanDate.isEmpty() && olderThanDate.isPresent()) {
-            posts = postService.getVisiblePostsOlder(olderThanDate.get(), authorizedUser, pageable);
+            posts = postService.getVisiblePostsOlder(olderThanDate.get(), currentUser, pageable);
         } else {
-            posts = postService.getVisiblePostsNewerOlder(olderThanDate.get(), newerThanDate.get(), authorizedUser, pageable);
+            posts = postService.getVisiblePostsNewerOlder(olderThanDate.get(), newerThanDate.get(), currentUser, pageable);
         }
 
         var postsDto = posts.stream().map(PostDto::new).toList();

@@ -5,7 +5,7 @@ import Posts from '../../components/posts';
 import Header from '../../components/header';
 import Friends from '../../components/friends';
 import { ComponentAuth } from '../../types/auth';
-import { RoleNameEnum } from '../../api';
+import { UserDtoRolesEnum } from '../../api';
 import ChatBox from '../../components/chat';
 import { ChatContext } from '../../contexts/ChatContext';
 
@@ -34,4 +34,4 @@ export default function MainPage() {
     );
 }
 
-MainPage.auth = new ComponentAuth(RoleNameEnum.User);
+MainPage.auth = new ComponentAuth(UserDtoRolesEnum.User);

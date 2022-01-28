@@ -32,6 +32,11 @@ public class UsersController {
     private final UserService userService;
     private final RoleService roleService;
 
+    /**
+     * Returns the UserDto object for current user
+     *
+     * @return
+     */
     @GetMapping("/me")
     public ResponseEntity<UserDto> getCurrentUser() {
         var currentUser = userService.getLoggedUserUpdated().orElseThrow(() -> {
@@ -82,7 +87,7 @@ public class UsersController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/admin")
     public ResponseEntity<Result<String>> setAdmin(@PathVariable(value = "id") String idS, @Valid @RequestBody SetAdminRequest setAdminRequest) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
 
         long id;
         try {

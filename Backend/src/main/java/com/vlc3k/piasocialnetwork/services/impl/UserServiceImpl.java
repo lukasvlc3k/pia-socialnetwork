@@ -5,6 +5,7 @@ import com.vlc3k.piasocialnetwork.entities.User;
 import com.vlc3k.piasocialnetwork.enums.ERole;
 import com.vlc3k.piasocialnetwork.repositories.UserRepository;
 import com.vlc3k.piasocialnetwork.services.UserService;
+import com.vlc3k.piasocialnetwork.utils.utils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -67,13 +68,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getRelevantUsers(String searchFor, Pageable pageable) {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return userRepository.findRelevantUsers(currentUser.getId(), searchFor, pageable);
     }
 
     @Override
     public Optional<User> getLoggedUserUpdated() {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = utils.getCurrentUser();
         return getById(currentUser.getId());
     }
 
@@ -86,6 +87,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findUsersInRole(ERole role) {
         return userRepository.findUsersInRole(role);
+    }
+
+    @Override
+    public List<User> getByOnline(boolean online) {
+        return userRepository.findByIsOnline(online);
     }
 
     @Override

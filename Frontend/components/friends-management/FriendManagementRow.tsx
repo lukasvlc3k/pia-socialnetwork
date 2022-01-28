@@ -1,4 +1,4 @@
-import { RoleNameEnum, UserDto, UserDtoRolesEnum } from '../../api';
+import { UserDtoRolesEnum, UserDto } from '../../api';
 import React, { useContext } from 'react';
 import styles from '../../styles/friends.module.scss';
 import Auth from '../common/Auth';
@@ -36,7 +36,7 @@ export default function FriendManagementRow(props: FriendRowProps) {
         <div title={props.friend.email} className={styles.friendRowManagement}>
             <div className={styles.name}>{props.friend.name}</div>
             <div className={styles.email}>{props.friend.email}</div>
-            <Auth minRole={RoleNameEnum.Admin}>
+            <Auth minRole={UserDtoRolesEnum.Admin}>
                 <div className={styles.actions}>
                     <AdminButton />
                 </div>

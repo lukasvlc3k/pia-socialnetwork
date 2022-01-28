@@ -8,7 +8,7 @@ import styles from '../../styles/main-layout.module.scss';
 import Link from 'next/link';
 import { LoggedUserContext } from '../../contexts/LoggedUserContext';
 import Auth from '../common/Auth';
-import { RoleNameEnum } from '../../api';
+import { UserDtoRolesEnum } from '../../api';
 
 export default function Header() {
     const router = useRouter();

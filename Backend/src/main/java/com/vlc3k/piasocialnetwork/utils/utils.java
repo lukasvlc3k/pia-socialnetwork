@@ -51,4 +51,8 @@ public class utils {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
         return RandomStringUtils.random(length, characters);
     }
+
+    public static double log2(double x) {
+        return Math.log(x) / Math.log(2);
+    }
 }
