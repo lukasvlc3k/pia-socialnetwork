@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { ChatMessageDto, UserDto } from '../api';
-import { chatController, userController } from '../controllers';
-import moment, { Moment } from 'moment';
-import { getTokenData, loginUser, logoutUser } from '../utils/login';
-import { useRouter } from 'next/router';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {ChatMessageDto, UserDto} from '../api';
+import {chatController, userController} from '../controllers';
+import moment, {Moment} from 'moment';
+import {getTokenData, loginUser, logoutUser} from '../utils/login';
+import {useRouter} from 'next/router';
+import {LoggedUserContext} from "./LoggedUserContext";
 
 interface IChatProvider {
     chatWith: UserDto | null;
@@ -27,17 +28,18 @@ export const ChatContext = createContext<IChatProvider>({
 const ChatProvider = (props: { children: React.ReactNode }) => {
     const [chatWith, setChatWith] = useState<UserDto | null>(null);
     const [chatMessages, setChatMessages] = useState<ChatMessageDto[] | null>(null);
+    const {loggedUser} = useContext(LoggedUserContext);
 
     useEffect(() => {
         loadData();
     }, [chatWith]);
 
     async function loadData() {
-        if (!chatWith?.id) {
+        if (!chatWith?.id || !loggedUser?.id) {
             return;
         }
 
-        const res = await chatController.getChatMessages(chatWith.id, 10);
+        const res = await chatController.getChatMessages(loggedUser.id, chatWith.id, 10);
         setChatMessages(res?.data.reverse() ?? []);
     }
 
